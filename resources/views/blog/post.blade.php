@@ -146,7 +146,7 @@
 
                 <div class="aside-block">
                     <h3 class="aside-title">Categories</h3>
-                    <x-home.footer.category-link class="aside-links list-unstyled" />
+                    <x-home.footer.category-link class="aside-links list-unstyled" :number_of_category_to_show=5 />
                 </div>
 
                 <div class="aside-block">

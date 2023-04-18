@@ -7,28 +7,22 @@ use App\Models\Post;
 
 class RecentPosts extends Component
 {
-    /**
-     * Create a new component instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         //
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
-     */
     public function render()
     {
-        $posts = Post::all()->take(5);
+        $posts = Post::published()->orderByDesc('published_at')->take(5)->get();
+
+        $posts->map(function( $posts ){
+            $posts->category = Post::postMainCategory( $posts );            
+            return $posts;
+        });
 
         $data = [
-            'posts' => $posts,
-            'category' => 'sports'
+            'posts' => $posts
         ];
 
         return view('components.home.footer.recent-posts', $data);

@@ -19,6 +19,8 @@ use App\Models\PostAuthor;
 
 use Illuminate\Support\Facades\DB;
 
+use function PHPSTORM_META\map;
+
 class PostContoller extends Controller
 {
     public function __construct()
@@ -159,22 +161,22 @@ class PostContoller extends Controller
 
         $blogAuthors = Author::all();
         $blogCategories = BlogCategory::all();
-        $postCategories = $post->categories;
+        
         $blogTags = Tag::all();
         $postTags = $post->tags;
         $postAuthors = $post->authors;
 
-        foreach ($postCategories as $category) {
-           $blogPostCategories[] = $category->category_id;
-        }
+        $blogPostCategories = $post->categories->map(function( $categories ){
+            return $categories->id;
+        });
 
-        foreach ($postTags as $tag) {
-            $blogPostTags[] = $tag->blog_tag_id;
-        }
+        $blogPostTags = $post->tags->map(function($tags){
+            return $tags->id;
+        });
 
-        foreach ($postAuthors as $author) {
-            $blogPostAuthors[] = $author->author_id;
-        }
+        $blogPostAuthors = $post->authors->map(function($authors){
+            return $authors->id;
+        });
 
         return view('admin.post.edit',[
             'post' => $post,

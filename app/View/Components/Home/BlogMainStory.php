@@ -17,13 +17,14 @@ class BlogMainStory extends Component
     public function render()
     {
         $post = Post::select('id', 'title', 'slug', 'summary', 'published_at')->published()->orderBy('id', 'DESC')->first();
- 
-        $category = Post::getPostCategories( $post );
+
+        $category = Post::postMainCategory( $post );
+
         $author = Post::getPostAuthors( $post );
 
         $data = [
             'post' => $post,
-            'category' => Str::lower( $category ),
+            'category' => $category,
             'author' => $author
         ];  
 

@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryLink extends Component
 {
-    public function __construct()
+    public function __construct(
+        public int $numberOfCategoryToShow = 3,
+    )
     {
-
+        $this->numberOfCategoryToShow = $numberOfCategoryToShow;
     }
 
     /**
@@ -19,7 +21,7 @@ class CategoryLink extends Component
      */
     public function render()
     {
-        $blogCategory = DB::table('blog_category')->select('name','url')->where(['status' => 1])->orderBy('position')->get();
+        $blogCategory = DB::table('blog_category')->select('name','url')->where(['status' => 1])->orderBy('position')->take( $this->numberOfCategoryToShow )->get();
 
         $data = [
             'blog_category' => $blogCategory,

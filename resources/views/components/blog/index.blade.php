@@ -59,7 +59,7 @@
         <div class="row g-5">
           <div class="col-lg-4"><h3 class="footer-heading">About ZenBlog</h3><x-home.footer.about /></div>
           <div class="col-6 col-lg-2"><h3 class="footer-heading">Navigation</h3><x-home.footer.top-navigation /></div>
-          <div class="col-6 col-lg-2"><h3 class="footer-heading">Categories</h3><x-home.footer.category-link class="footer-links list-unstyled" /></div>
+          <div class="col-6 col-lg-2"><h3 class="footer-heading">Categories</h3><x-home.footer.category-link class="footer-links list-unstyled" :number_of_category_to_show=5 /></div>
           <div class="col-lg-4"><h3 class="footer-heading">Recent Posts</h3><x-home.footer.recent-posts /></div>
         </div>
       </div>

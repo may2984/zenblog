@@ -33,7 +33,7 @@ class TrendingStory extends Component
         $posts = Post::select('id', 'title', 'slug')->whereIn( 'id' , $post_ids )->get();
 
         $posts->map(function( $posts ){
-            $posts->category = Post::getPostCategories( $posts );
+            $posts->category = Post::postMainCategory( $posts );
             $posts->author = Post::getPostAuthors( $posts );
             return $posts;
         }); 

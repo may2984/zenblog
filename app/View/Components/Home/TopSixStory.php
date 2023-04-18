@@ -14,11 +14,15 @@ class TopSixStory extends Component
 
     public function render()
     {
-        $home_six_stories = Post::orderBy('published_at', 'DESC')->limit(6)->get();
+        $posts = Post::published()->orderByDesc('published_at')->offset(1)->limit(6)->get();
+
+        $posts->map(function( $posts ){
+            $posts->category = Post::postMainCategory( $posts );            
+            return $posts;
+        }); 
 
         return view('components.home.top-six-story',[
-            'stories' => $home_six_stories,
-            'category' => 'sports'
+            'stories' => $posts,
         ]);
     }
 }
