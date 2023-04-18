@@ -42,14 +42,29 @@ class Post extends Model
         return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id');
     }
 
+    public function post_main_category(): belongsToMany
+    {
+        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id'); //->wherePivot('is_main_category', 1);
+    }
+
     public function tags(): belongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'blog_post_tag');
+        return $this->belongsToMany(Tag::class, 'blog_post_tag', 'blog_post_id', 'blog_tag_id');
     }
 
     public function authors(): belongsToMany
     {
         return $this->belongsToMany(Author::class, 'blog_post_author');
+    }
+
+    public static function postMainCategory( $post ){
+        
+        # fetch the main category
+        $category = $post->post_main_category->map( function( $post_main_category ) {
+            return $post_main_category->url;
+        }); 
+        
+        return $category[0];
     }
 
     public static function getPostCategories( $post ){
