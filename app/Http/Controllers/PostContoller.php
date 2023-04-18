@@ -26,6 +26,7 @@ class PostContoller extends Controller
     public function __construct()
     {
         DB::enableQueryLog();
+        # mayank
     }
 
     public function index(Request $request)
