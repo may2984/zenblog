@@ -19,24 +19,7 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/article/{category}/{slug}/{id}', [HomeController::class, 'posts'])->name('post.url');
 Route::get('/category/{category}', [HomeController::class, 'category'])->name('category.url');
-
-/***
- * 
- * <title>Rajasthan Congress tumult intensifies: Sachin Pilot turns up the heat on Gehlot over ‘corruption’ cases against Raje govt | Political Pulse News,The Indian Express</title>
- * <meta name="description" content="Tonk MLA says he twice wrote to Rajasthan CM last year seeking action in the cases but did not get any response, announces daylong dharna in Jaipur on April 11 " />
-<meta name="news_keywords" content="Sachin Pilot, Sachin Pilot on ashok gehlot, ashok gehlot, rajasthan corruption charges, rajasthan news, indian express" />
-<meta name="keywords" content="Sachin Pilot, Sachin Pilot on ashok gehlot, ashok gehlot, rajasthan corruption charges, rajasthan news, indian express" />
-
-<title>Latest News Today: Breaking News and Top Headlines from India, Entertainment, Business, Politics and Sports|The Indian Express</title>	
-
-<meta name="description" content="Today&#039;s news: Get latest and Breaking News on Politics, Business, Lifestyle, Entertainment and Sports along with News updates from around the world. Also, find English News, live coverage on Bollywood, Cricket, Technology, Celebrities and more on indianexpress.com" />
-
-<meta name="keywords" content="News, Latest News, Breaking News, Live News, India News, News Online, News Headlines, News Today, English News, Top Stories" />
-
- */
-
-
-
+Route::post('contact/us', [HomeController::class, 'contactUs'])->name('blog.contact');
 
 Route::get('/login', \Auth0\Laravel\Http\Controller\Stateful\Login::class)->name('login');
 Route::get('/auth0/callback', \Auth0\Laravel\Http\Controller\Stateful\Callback::class)->name('auth0.callback');

@@ -27,6 +27,14 @@
   <!-- Template Main CSS Files -->
   <link href="{{ asset('frontend/assets/css/variables.css') }}" rel="stylesheet">
   <link href="{{ asset('frontend/assets/css/main.css') }}" rel="stylesheet">
+
+   <!-- Template Main JS Files -->
+  <script src="{{ asset('frontend/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('frontend/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ asset('frontend/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ asset('frontend/assets/vendor/aos/aos.js') }}"></script>    
+  <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
+
 </head>
 <body>
 
@@ -82,14 +90,6 @@
       </div>
     </div>
   </footer>
-
   <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <script src="{{ asset('frontend/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('frontend/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-  <script src="{{ asset('frontend/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-  <script src="{{ asset('frontend/assets/vendor/aos/aos.js') }}"></script>
-  <script src="{{ asset('frontend/assets/vendor/php-email-form/validate.js') }}"></script>  
-  <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 </body>
 </html>

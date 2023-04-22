@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Tag;
+use App\Models\User;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class TagController extends Controller
@@ -31,7 +32,7 @@ class TagController extends Controller
         $name = $request->name;
 
         if( Str::of($name)->contains(',') )
-        {
+        {   
             $request->validate([
                 'name' => 'required'
             ],[
@@ -53,7 +54,7 @@ class TagController extends Controller
         }
         else
         {
-            $request->validate([
+            $validated = $request->validate([
                 'name' => 'required|max:20|unique:blog_tag',
             ],[
                 'name.required' => 'Enter name',
@@ -61,13 +62,7 @@ class TagController extends Controller
                 'unique' => 'Duplicate tag',
             ]); 
 
-            $tag = new Tag;
-
-            $tag->status = $request->status;
-            $tag->tag_user_id = session('user_id');
-            $tag->name = $request->name;
-
-            $saved = $tag->save();        
+            $saved = User::find( session('user_id') )->tags()->create($validated);
         }          
 
         if( !$saved )
@@ -148,7 +143,5 @@ class TagController extends Controller
         {
             return response()->json('');
         }
-    }
-
-    
+    }    
 }

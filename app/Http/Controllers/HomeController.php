@@ -8,6 +8,8 @@ use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
+use App\Models\Contact;
+use App\Http\Requests\StoreContactUsForm;
 
 class HomeController extends Controller
 {
@@ -60,5 +62,34 @@ class HomeController extends Controller
         {            
             return view('errors.404');
         }
+    }
+
+    public function contactUs(StoreContactUsForm $request)
+    {
+        if( $request->validated() )
+        {
+            $contact = new Contact();
+
+            $data = [
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'subject' => $request->input('subject'),
+                'message' => $request->input('message'),
+                'visitor_ip' => $request->ip(),
+                'user_agent' => $request->header('user-agent')
+            ];
+
+            $stored = $contact->create( $data );
+
+            if( !$stored )
+            {
+                return back()->with(['error' => 'There was an error submitting your request. Please try again later']);
+            }
+            else
+            {
+                return back()->with(['success' => 'Thanks for contacting us! We will be in touch with you shortly.']);
+            }
+        }
+        
     }
 }

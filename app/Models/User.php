@@ -46,7 +46,7 @@ class User extends Authenticatable
 
     public function tags(): HasMany
     {
-        return $this->hasMany(Tag::class, 'tag_user_id');
+        return $this->hasMany(Tag::class);
     }
 
     public function posts(): HasMany

@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'auth0',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
