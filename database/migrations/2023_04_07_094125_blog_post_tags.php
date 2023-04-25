@@ -19,8 +19,8 @@ return new class extends Migration
     {
         Schema::create('blog_post_tag', function( Blueprint $table ) {
             $table->id();            
-            $table->foreignId('blog_post_id')->references('id')->on('blog_post')->cascadeOnDelete();
-            $table->foreignId('blog_tag_id')->references('id')->on('blog_tag')->cascadeOnDelete();
+            $table->foreignId('post_id')->references('id')->on('blog_post')->cascadeOnDelete();
+            $table->foreignId('tag_id')->references('id')->on('blog_tag')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

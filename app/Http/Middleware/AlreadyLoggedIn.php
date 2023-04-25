@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AlreadyLoggedIn
 {
@@ -16,7 +17,7 @@ class AlreadyLoggedIn
      */
     public function handle(Request $request, Closure $next)
     {
-        if( $request->session()->exists('email') && $request->session()->exists('name') )
+        if (Auth::check())      
         {
             return redirect()->route('admin.dashboard');
         }

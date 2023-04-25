@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginCheck
 {
@@ -16,7 +17,7 @@ class LoginCheck
      */
     public function handle(Request $request, Closure $next)
     {
-        if( !$request->session()->exists('email') )
+        if (! Auth::check())             
         {
             return redirect()->route('admin.login');
         }

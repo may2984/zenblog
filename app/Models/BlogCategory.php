@@ -13,7 +13,7 @@ class BlogCategory extends Model
 
     protected $table = 'blog_category';
 
-    protected $fillable = ['name','url','desctiption','status'];
+    protected $fillable = ['name','url','description','status'];
 
     public $timestamps = true;
 

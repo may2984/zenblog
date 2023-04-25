@@ -11,11 +11,26 @@ use Illuminate\Support\Str;
 use Image;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function login(Request $request)
     {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+ 
+            return redirect()->route('admin.dashboard');
+        }
+
+        return back()->with('error','Unable to authenticate user');
+
+        /*
         $request->validate([
             'email' => 'required',
             'password' => 'required'            
@@ -42,6 +57,7 @@ class AdminController extends Controller
         {
             return back()->with('error','Unable to authenticate user');
         }
+        */
     }
 
     public function register(Request $request)
@@ -73,7 +89,7 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
-        $request->session()->flush();
+        Auth::logout();
         return redirect()->route('admin.login')->with('success','You have successfully logged out');
     }
 

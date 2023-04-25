@@ -39,18 +39,19 @@ class TagController extends Controller
                 'name.required' => 'Enter tags',
             ]); 
 
-            $tags = explode(",", $name);
+            $tagArray = explode(",", $name);
 
-            foreach($tags as $word)
-            {
-                $tag = new Tag;
+            $count = 0;
+            
+            foreach($tagArray as $word)
+            { 
+                $count = $count + 1;              
+                $tags[$count]['name'] = $word;
+                $tags[$count]['status'] = $request->status;
+            }
 
-                $tag->status = $request->status;
-                $tag->tag_user_id = session('user_id');
-                $tag->name = trim( $word );
-
-                $saved = $tag->save();        
-            }   
+            $saved = $request->user()->tags()->createMany( $tags );
+               
         }
         else
         {
@@ -62,7 +63,7 @@ class TagController extends Controller
                 'unique' => 'Duplicate tag',
             ]); 
 
-            $saved = User::find( session('user_id') )->tags()->create($validated);
+            $saved = $request->user()->tags()->create($validated);
         }          
 
         if( !$saved )
