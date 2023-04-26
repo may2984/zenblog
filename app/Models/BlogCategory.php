@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BlogCategory extends Model
@@ -21,8 +22,18 @@ class BlogCategory extends Model
         'created_at' => 'datetime',
     ];
 
+    /*
+
     public function name(): BelongsTo
     {
         return $this->belongsTo(PostBlogCategory::class);
     }
+    */
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+
 }

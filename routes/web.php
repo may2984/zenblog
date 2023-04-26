@@ -98,6 +98,10 @@ Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::c
     Route::get('post/edit/{id}', 'edit')->name('post.edit');
     Route::post('post/update/{id}', 'update')->name('post.update');
     Route::post('post/destroy/{id}', 'destroy')->name('post.delete');
+
+    Route::get('post/toggle/publish/{status}/{id}', 'togglePublish')->name('post.toggle.publish');
+
+
     Route::post('test/upload', 'upload')->name('post.upload');
 });
 

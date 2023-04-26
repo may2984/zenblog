@@ -35,11 +35,11 @@ class PostContoller extends Controller
         
         if( Str::of( $search )->trim()->isNotEmpty() )
         {
-            $posts = Post::select('id','title')->where( 'title', 'LIKE', '%'.$search.'%' )->orderBy('id', 'DESC')->paginate(10)->withQueryString();            
+            $posts = Post::select('id', 'title', 'published')->where( 'title', 'LIKE', '%'.$search.'%' )->orderBy('id', 'DESC')->paginate(10)->withQueryString();            
         }
         else
         {
-            $posts = Post::select('id','title')->orderBy('id', 'DESC')->paginate(10);
+            $posts = Post::select('id', 'title', 'published')->orderBy('id', 'DESC')->paginate(10);
         }        
         
         return view('admin.post.list', [
@@ -77,7 +77,7 @@ class PostContoller extends Controller
         $request->validated();
 
         $data = [   
-            'user_id' => session('user_id'),
+            'user_id' => $request->user()->id,
             'title' => $request->title,
             'slug' => $request->slug,
             'summary' => $request->summary,
@@ -110,12 +110,18 @@ class PostContoller extends Controller
         {
             $blog_category_ids = $request->blog_category;
             
+            $count = 1;
+
             foreach($blog_category_ids AS $blog_category_id)
             {
                 $PostBlogCategory = new PostBlogCategory;
 
                 $PostBlogCategory->post_id = $post_id;
                 $PostBlogCategory->category_id = $blog_category_id;
+                if( $count ){
+                    $PostBlogCategory->is_main_category = 1;
+                    $count = 0;
+                }
                 $PostBlogCategory->save();
             }
 
@@ -125,8 +131,8 @@ class PostContoller extends Controller
             {
                 $BlogPostTag = new BlogPostTag;
 
-                $BlogPostTag->blog_post_id = $post_id;
-                $BlogPostTag->blog_tag_id = $blog_tag_id;
+                $BlogPostTag->post_id = $post_id;
+                $BlogPostTag->tag_id = $blog_tag_id;
                 $BlogPostTag->save();
             }
 
@@ -160,24 +166,30 @@ class PostContoller extends Controller
     {
         $post = Post::find($id);
 
+        /**
+         * Eager Loadin guser name
+         * $post = Post::with('user:id,name')->find($id);
+         * dd( $post->user->name );
+         */
+
+        # Fetch Author, Category and Tag
         $blogAuthors = Author::all();
-        $blogCategories = BlogCategory::all();
-        
+        $blogCategories = BlogCategory::all();        
         $blogTags = Tag::all();
-        $postTags = $post->tags;
-        $postAuthors = $post->authors;
+
+        # Get all the Author, Category and Tag saved for this post
 
         $blogPostCategories = $post->categories->map(function( $categories ){
             return $categories->id;
         });
 
-        $blogPostTags = $post->tags->map(function($tags){
+        $blogPostTags = $post->tags->map(function( $tags ){
             return $tags->id;
         });
 
-        $blogPostAuthors = $post->authors->map(function($authors){
+        $blogPostAuthors = $post->authors->map(function( $authors ){
             return $authors->id;
-        });
+        });        
 
         return view('admin.post.edit',[
             'post' => $post,
@@ -220,8 +232,7 @@ class PostContoller extends Controller
 
     public function destroy($id)
     {
-        $post = Post::find($id);
-        $deleted = $post->delete();
+        $deleted = Post::destroy($id);
 
         if( !$deleted )
         {
@@ -235,7 +246,6 @@ class PostContoller extends Controller
 
     public function upload(Request $request)
     {
-       // return 'mayank';
 
         return response()->json($request->file('profile_photo'));
 
@@ -274,4 +284,15 @@ class PostContoller extends Controller
             
         } 
     }    
+
+    public function togglePublish( Request $request, $id, $status )
+    {        
+        $updated = Post::find( $request->id )->update( [ 'published' => $request->status ] );
+
+        if( !$updated ){
+            return response()->json(['type' => 'error']);
+        }
+
+        return response()->json(['type' => 'success']);        
+    }
 }

@@ -1,5 +1,5 @@
 <div class="post-entry-1 lg">
-    <a href="{{ route('post.url', ['category' => $category, 'slug' => $post['slug'], 'id' => $post['id'] ]) }}">
+    <a href="{{ route('post.url', ['category' => $category, 'slug' => $post->slug, 'id' => $post->id ]) }}">
         <img src="{{ asset('frontend/assets/img/post-landscape-1.jpg') }}" alt="{{ $post->title }}" class="img-fluid">
     </a>
     <div class="post-meta"><span class="date">{{ $category }}</span>&nbsp;<span class="mx-1">&bullet;</span> 

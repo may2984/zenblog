@@ -44,12 +44,12 @@ class Post extends Model
 
     public function post_main_category(): belongsToMany
     {
-        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id'); //->wherePivot('is_main_category', 1);
+        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id')->wherePivot('is_main_category', 1);
     }
 
     public function tags(): belongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'blog_post_tag', 'blog_post_id', 'blog_tag_id');
+        return $this->belongsToMany(Tag::class, 'blog_post_tag', 'post_id', 'tag_id');
     }
 
     public function authors(): belongsToMany
