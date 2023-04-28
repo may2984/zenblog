@@ -7,6 +7,27 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style type="text/css">
         #post_body { height: 500px; }
+
+        .sortable{
+            border: 1px solid #eee;
+            width: 300px;
+            min-height: 20px;
+            list-style-type: none;
+            margin: 0;
+            padding: 5px 0 0 0;
+            float: left;
+            margin-right: 10px;
+        }
+        .sortable li{
+            margin: 0 5px 5px 5px;
+            padding: 5px;
+            font-size: 1.2em;
+            width: 280px;
+        }
+
+        .red-border{
+            border: 1px solid red;
+        }
     </style>
     @endpush
     @push('scripts')
@@ -33,6 +54,46 @@
                 var slug = $('#title').val().replace(/[^a-zA-Z0-9 ]/g, "").split(" ").join('-').toLowerCase();
                 $('#slug').val( slug );
             });
+
+            $( "#sortable_author_1, #sortable_author_2" ).sortable({
+                connectWith: ".connectedSortable",               
+            }).disableSelection();
+
+            $( "#sortable_author_2" ).on( "sortupdate", function( event, ui ) {               
+
+                $( "#sortable_author_1" ).find('li').removeClass('red-border');
+
+                $(this).find('li').removeClass('red-border');
+                $(this).find('li').first().addClass('red-border');
+
+                var id_string = [];
+                $(this).children().each(function(index) {
+                    var id = $(this).attr('id');
+                    id_string += `<input type="thidden" name="blog_author[]" value=${id}>`
+                });
+                $('#tr_author').html( id_string );
+            });
+
+            $( "#sortable_category_1, #sortable_category_2" ).sortable({
+                connectWith: ".connectedSortable",               
+            }).disableSelection();
+
+            $( "#sortable_category_2" ).on( "sortupdate", function( event, ui ) {               
+
+                $( "#sortable_category_1" ).find('li').removeClass('red-border');
+
+                $(this).find('li').removeClass('red-border');
+                $(this).find('li').first().addClass('red-border');
+
+                var id_string = [];
+                $(this).children().each(function(index) {
+                    var id = $(this).attr('id');
+                    id_string += `<input type="thidden" name="blog_category[]" value=${id}>`
+                });
+                $('#tr_category').html( id_string );
+            });
+
+            
 
         });
     </script>
@@ -82,38 +143,45 @@
                                 <textarea class="form-control" name="summary" rows="4">{{ old('summary') }}</textarea>
                             </div>                           
                         </div>  
-                        <div class="col-12 mb-3">                            
+
+                        <div class="col-12 mb-3 row" id="tr_author"></div>
+
+                        <div class="col-12 mb-3 row">                                                        
                             <label class="form-label">Author<span class="text-danger"> *</span></label>
                             @error('blog_author')
                             <span class="col-sm-5 text-danger">
                                 {{ $message }}
                             </span>
                             @enderror
-                            <div class="col-sm-10">
-                                @foreach($blogAuthors AS $author)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="blog_author[]" id="blog_author" value="{{ $author->id }}" {{ (collect(old('blog_author'))->contains($author->id)) ? 'checked':'' }}>
-                                    <label class="form-check-label" for="{{ $author->id }}">{{ $author->full_name }}</label>
-                                </div>                                                                                               
-                                @endforeach                               
+                            <div class="input-group mb-3">
+                                <ul id="sortable_author_1" class="connectedSortable sortable">
+                                    @foreach($blogAuthors AS $author)
+                                        <li class="ui-state-default" id="{{ $author->id }}">{{ $author->full_name }}</li>                                   
+                                    @endforeach       
+                                </ul>
+                                <ul id="sortable_author_2" class="connectedSortable sortable"></ul>
                             </div>
-                        </div>  
-                        <div class="col-12 mb-3">                               
+                        </div> 
+              
+                        <div class="col-12 mb-3 row" id="tr_category"></div>
+
+                        <div class="col-12 mb-3 row">                               
                             <label class="form-label">Category<span class="text-danger"> *</span></label>
                             @error('blog_category')
                             <span class="col-sm-5 text-danger">
                                 {{ $message }}
                             </span>
                             @enderror
-                            <div class="col-sm-10">
-                                @foreach($blogCategories AS $blogCategory)                                    
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input blog-category" type="checkbox" name="blog_category[]" id="blog_author" value="{{ $blogCategory->id }}" {{ (collect(old('blog_category'))->contains($blogCategory->id)) ? 'checked':'' }}>
-                                        <label class="form-check-label" for="{{ $blogCategory->id }}">{{ $blogCategory->name }}</label>
-                                    </div>
-                                @endforeach                                
+                            <div class="input-group mb-3">
+                                <ul id="sortable_category_1" class="connectedSortable sortable">
+                                    @foreach($blogCategories AS $blogCategory) 
+                                        <li class="ui-state-default" id="{{ $blogCategory->id }}">{{ $blogCategory->name }}</li>                                                                            
+                                    @endforeach                                
+                                </ul>
+                                <ul id="sortable_category_2" class="connectedSortable sortable"></ul>
                             </div>
-                        </div>  
+                        </div> 
+
                         <div class="col-12 mb-3">                             
                             <label for="inputPassword" class="form-label">Tags<span class="text-danger"> *</span></label>
                             @error('blog_category')

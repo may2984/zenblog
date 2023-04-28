@@ -74,8 +74,6 @@ class PostContoller extends Controller
      */
     public function store(StorePostRequest $request): RedirectResponse
     {
-        $request->validated();
-
         $data = [   
             'user_id' => $request->user()->id,
             'title' => $request->title,
@@ -88,7 +86,7 @@ class PostContoller extends Controller
             'published_at' => $request->publish_date.' '.$request->publish_time
         ];
 
-       # dd( $request->input() );
+    //    dd( $request->input() );
 
         $Post = new Post();
 
