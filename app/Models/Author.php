@@ -11,18 +11,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Author extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'blog_author';
 
-    protected $fillable = ['name','created_by'];
+    protected $fillable = ['first_name','last_name', 'pen_name', 'url', 'photo'];
 
     public $timestamps = true;   
+
+    protected $appends = [
+        'full_name',
+    ];
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',        
+    ];
 
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            fn ($value, $attributes) => $attributes['first_name'].' '.$attributes['last_name']            
+            get: fn ($value, $attributes) => $attributes['first_name'].' '.$attributes['last_name']            
         );
     }  
     
@@ -34,8 +42,13 @@ class Author extends Model
         );
     }
 
-    public function authors(): BelongsTo    
+ /*    public function authors(): BelongsTo    
     {
         return $this->BelongsTo(PostAuthor::class);
+    } */
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);        
     }
 }

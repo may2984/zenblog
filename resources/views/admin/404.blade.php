@@ -1,4 +1,4 @@
-<x-blog.index>
+<x-admin.layout>
     <section id="contact" class="contact mb-5">
         <div class="container" data-aos="fade-up">
             <div class="row">
@@ -6,7 +6,7 @@
                     <h1 class="display-1">404<br>Page not found</h1>
                 </div>
             </div>            
-            <div class="d-flex justify-content-center"><a class="btn btn-primary" href="/" role="button">Back to Home Page</a></div>
+            <div class="d-flex justify-content-center"><a class="btn btn-primary" href="{{url('/')}}" role="button">Back to Home Page</a></div>
         </div>
     </section>
-</x-blog.index>
+</x-admin.layout>

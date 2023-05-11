@@ -109,11 +109,14 @@
                 </div>
                 @enderror                  
               </div>
+              <div>
+                
+              </div>
               <fieldset class="row mb-3">
                 <legend class="col-form-label col-sm-2 pt-0">Status</legend>
                 <div class="col-sm-2">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="gridRadios1" value="1" checked>
+                    <input class="form-check-input" type="radio" name="status" value="1" @checked( old('status') === null || old('status') == '1' ) />
                     <label class="form-check-label" for="gridRadios1">
                       Active
                     </label>
@@ -121,7 +124,7 @@
                 </div>
                 <div class="col-sm-2">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="gridRadios2" value="0">
+                    <input class="form-check-input" type="radio" name="status" value="0" @checked( old('status') == '0' ) />
                     <label class="form-check-label" for="gridRadios2">
                       Inactive
                     </label>

@@ -15,7 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        # PostBlogCategory::factory(10)->create();
-        Author::factory(10)->create();
+        $this->call([
+            UserSeeder::class,
+            AuthorSeeder::class,
+            CategorySeeder::class,
+            TagSeeder::class,
+          //  PostSeeder::class,
+        ]);
     }
 }

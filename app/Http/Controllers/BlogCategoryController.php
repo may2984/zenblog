@@ -27,12 +27,12 @@ class BlogCategoryController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate(
+    {        
+        $request->validate(
             [
-            'name' => 'required|unique:blog_category|max:100',
-            'url' => 'required|unique:blog_category|max:100',
-            'description' => 'required|max:200',
+                'name' => 'required|unique:blog_category|max:100',
+                'url' => 'required|unique:blog_category|max:100',
+                'description' => 'required|max:200',
             ],
             [
                 'name.required' => 'Please enter a name',
@@ -42,17 +42,15 @@ class BlogCategoryController extends Controller
                 'description.required' =>  'Please write some description',
                 'description.max' => 'Description can be max 200 characters',
             ]
-        );
+        );        
 
-        $BlogCategory = new BlogCategory;
-
-        $BlogCategory->name = $request->name;
-        $BlogCategory->url = $request->url != '' ? Str::kebab( $request->url ) : Str::kebab($request->name);
-        $BlogCategory->position = $this->get_max_position();
-        $BlogCategory->description = $request->description;
-        $BlogCategory->status = $request->status;
-
-        $stored = $BlogCategory->save();        
+        $stored = $request->user()->categories()->create([
+            'name' => $request->name,
+            'url' => Str::kebab($request->url),
+            'position' => $this->get_max_position(),
+            'description' => $request->description,
+            'status' => $request->status,
+        ]);        
 
         if( !$stored )
         {

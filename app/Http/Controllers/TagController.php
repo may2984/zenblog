@@ -31,7 +31,9 @@ class TagController extends Controller
     {
         $name = $request->name;
 
-        if( Str::of($name)->contains(',') )
+        # check if the tags contain comma, space or hash
+
+        if( Str::of($name)->contains([',', '#', ' ']) )
         {   
             $request->validate([
                 'name' => 'required'
@@ -39,19 +41,22 @@ class TagController extends Controller
                 'name.required' => 'Enter tags',
             ]); 
 
-            $tagArray = explode(",", $name);
+            # split the tags using comma, space and hash
+            $tagArray = Str::of($name)->split("/[\s,#]+/");
 
             $count = 0;
             
             foreach($tagArray as $word)
-            { 
-                $count = $count + 1;              
-                $tags[$count]['name'] = $word;
-                $tags[$count]['status'] = $request->status;
+            {                 
+                if( Str::of($word)->trim()->isNotEmpty() )          
+                {
+                    $count = $count + 1;    
+                    $tags[$count]['name'] = Str::of($word)->trim();
+                    $tags[$count]['status'] = $request->status;
+                }                
             }
 
-            $saved = $request->user()->tags()->createMany( $tags );
-               
+            $saved = $request->user()->tags()->createMany( $tags );               
         }
         else
         {

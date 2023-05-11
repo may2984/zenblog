@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Author;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AuthorController extends Controller
 {
@@ -16,14 +17,8 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        # using query builder to combine first name and last name 
-        return response()->json(
-            DB::table('blog_author')->select('id', DB::raw('CONCAT_WS(" ", first_name, last_name) AS full_name'), 'url')
-            ->where('deleted_at', NULL)
-            ->orderBy('id', 'DESC')->get()
-        );
-
-        # return response()->json(Author::select('id','first_name','last_name', 'url')->orderBy('id', 'DESC')->take(10)->get());
+        # return response()->json(Author::select('id', 'first_name', 'last_name', 'url')->orderBy('id', 'DESC')->take(10)->get());
+        return response()->json(Author::all());
     }
 
     public function create(Request $request)
@@ -38,13 +33,15 @@ class AuthorController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'first_name' => 'required|max:100',            
+        $validated = $request->validate([
+            'first_name' => 'required|max:50',   
+            'last_name'=> 'max:50',
             'url' => 'required|max:100|unique:blog_author',
             'pen_name' => 'required|max:100|unique:blog_author'
         ],[
             'first_name.required' => 'Please enter first name',
             'first_name.max' => 'Maximum :max words',          
+            'last_name.max' => 'Maximum :max words',          
             'url.required' => 'Please enter author URL',
             'url.max' => 'Maximum :max words',    
             'url.unique' => 'URL already exists',
@@ -53,14 +50,7 @@ class AuthorController extends Controller
             'pen_name.unique' => 'Short name already exists',                                        
         ]);
 
-        $author = new Author;
-        $author->first_name = $request->first_name;
-        $author->last_name = $request->last_name != '' ? $request->last_name : '';
-        $author->pen_name = $request->pen_name;
-        $author->url = $request->url;
-        $author->created_by = session('user_id');
-
-        $saved = $author->save();
+        $saved = $request->user()->authors()->create($validated);
 
         if( !$saved )
         {
@@ -110,7 +100,7 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'first_name' => 'required|max:100',            
             'url' => 'required|max:100|unique:blog_author,id,'.$id,
             'pen_name' => 'required|max:100|unique:blog_author,id,'.$id
@@ -124,6 +114,8 @@ class AuthorController extends Controller
             'pen_name.max' => 'Maximum :max words',
             'pen_name.unique' => 'Short name already exists',                                        
         ]);
+
+        
 
         $author = Author::find( $id );
         $author->first_name = $request->first_name;

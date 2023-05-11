@@ -3,25 +3,22 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BlogCategory>
- */
 class BlogCategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition()
     {
+        $name = fake()->words(1, true);
+
         return [
-            'name' => fake()->name,
-            'url' => fake()->url(),
+            'user_id' => User::factory(),
+            'name' => $name,
+            'url' => Str::lower($name),
             'description' => fake()->text(),
-            'position' => fake()->randomElement(['1', '0']),
-            'status' => fake()->randomElement(['1', '0']),
+            'position' => 1,
+            'status' => '1',
         ];
     }
 }

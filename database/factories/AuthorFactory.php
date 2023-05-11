@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -20,8 +21,8 @@ class AuthorFactory extends Factory
         return [
             'first_name' => $first_name,
             'last_name' => $last_name,
-            'created_by' => '1',
-            'pen_name' => $first_name.'-'.$last_name,
+            'user_id' => User::factory(),
+            'pen_name' => $first_name.' '.$last_name,
             'url' => Str::lower( $first_name.'-'.$last_name ),
         ];
     }

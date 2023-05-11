@@ -53,4 +53,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }    
+
+    public function authors(): HasMany
+    {
+        return $this->hasMany(Author::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(BlogCategory::class);
+    }
 }

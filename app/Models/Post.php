@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +14,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use PhpParser\Node\AttributeGroup;
 
 class Post extends Model
 {
@@ -31,6 +35,21 @@ class Post extends Model
        // 'published' => Carbon::today()
     ];    
 
+    # Setter and Getter
+    public function publishDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) => Carbon::create($attributes['published_at'])->format('d-m-Y')
+        );        
+    }
+
+    public function publishTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) => Carbon::create($attributes['published_at'])->format('H:i')
+        );
+    }
+
     # Relations
     public function user(): BelongsTo
     {
@@ -40,12 +59,7 @@ class Post extends Model
     public function categories(): belongsToMany
     {
         return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id');
-    }
-
-    public function post_main_category(): belongsToMany
-    {
-        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id')->wherePivot('is_main_category', 1);
-    }
+    }   
 
     public function tags(): belongsToMany
     {
@@ -55,6 +69,11 @@ class Post extends Model
     public function authors(): belongsToMany
     {
         return $this->belongsToMany(Author::class, 'blog_post_author');
+    }
+
+    public function post_main_category(): belongsToMany
+    {
+        return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id')->wherePivot('is_main_category', 1);
     }
 
     public static function postMainCategory( $post ){

@@ -16,6 +16,11 @@ class Tag extends Model
 
     protected $fillable = ['name','status'];
 
+    # set default values
+    protected $attributes = [
+      'status' => true,
+    ];
+
     public $timestamps = true;
 
     public function user(): BelongsTo

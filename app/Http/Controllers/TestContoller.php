@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -16,7 +18,7 @@ class TestContoller extends Controller
         })->reject(function (string $name) {
             return empty($name);
         });
-        */
+        
 
         $collection = collect([1, 2, 3, null, false, '', 0, []]);
 
@@ -32,6 +34,18 @@ class TestContoller extends Controller
          
         $upper = $collection->toUpper();
 
-        return view('admin.test', ['names' => $upper]);
+        */
+
+        $data = Post::find(2);
+        $categories = Post::getPostCategories($data);
+
+        $x = Post::withCount('tags')->find(2);
+
+        dd($x->tags_count);
+
+        return view('admin.test', [
+            'posts' => $data,
+            'categories' => $categories
+        ]);
     }
 }

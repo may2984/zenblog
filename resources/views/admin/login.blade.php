@@ -15,6 +15,9 @@
                 </div>        
                 <div class="col"> </div>
             </div>
+            @if(Session::has('error'))
+                <div class="alert alert-danger">{{ Session::get('error') }}</div>
+            @enderror
         </div>          
         
         <div class="container-sm pt-5">

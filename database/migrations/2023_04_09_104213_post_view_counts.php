@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('blog_post_views', function( Blueprint $table ) {
             $table->id();
-            $table->foreignId(Post::class)->references('id')->on('blog_post')->cascadeOnDelete();            
+            $table->foreignId('post_id')->references('id')->on('blog_post')->cascadeOnDelete();            
             $table->timestamp('viewed_at', $precision = 0);
         });
     }

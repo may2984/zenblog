@@ -37,7 +37,7 @@
     <script type="text/javascript">
 
         $( function() {  
-            
+
             var quill = new Quill('#post_body', { theme: 'snow' }); 
 
             quill.on('text-change', function(delta, oldDelta, source) {
@@ -69,7 +69,7 @@
                 var id_string = [];
                 $(this).children().each(function(index) {
                     var id = $(this).attr('id');
-                    id_string += `<input type="thidden" name="blog_author[]" value=${id}>`
+                    id_string += `<input type="hidden" name="blog_author[]" value=${id}>`
                 });
                 $('#tr_author').html( id_string );
             });
@@ -88,13 +88,10 @@
                 var id_string = [];
                 $(this).children().each(function(index) {
                     var id = $(this).attr('id');
-                    id_string += `<input type="thidden" name="blog_category[]" value=${id}>`
+                    id_string += `<input type="hidden" name="blog_category[]" value=${id}>`
                 });
                 $('#tr_category').html( id_string );
             });
-
-            
-
         });
     </script>
     
@@ -202,6 +199,32 @@
                                 {{ $message }}
                             </div>
                             @enderror   
+                        </div>                                
+                    </div>
+                </div>
+            </div>  
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">                     
+                        <div class="mt-4 mb-4">
+                            <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="published" role="switch" @checked( old('published') === true || old('published') === null )>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Published</label>
+                            </div>
+                            <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="comments_allowed" role="switch" @checked( old('comments_allowed') == '1' || old('comments_allowed') === null )>
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Allow Comments</label>
+                            </div>
+                        </div> 
+                        
+                        <div class="row mb-3">
+                            <label for="inputDate" class="col-sm-2 col-form-label">Publish On<span class="text-danger"> *</span></label>
+                            <div class="col-sm-5">
+                                <input type="date" name="publish_date" id="publish_date" class="form-control datepicker" value="{{ old('publish_date') === null ? '11-05-2023' : old('publish_date') }}">    
+                            </div>                            
+                            <div class="col-sm-5">
+                                <input type="time" name="publish_time" id="publish_time" class="form-control" value="{{ old('publish_time') }}">
+                            </div>
                         </div>
                         <div class="row mb-3">
                             <label for="inputDate" class="col-sm-2 col-form-label"></label>
@@ -220,38 +243,6 @@
                                 @enderror 
                             </div>
                         </div> 
-                        <div class="row mb-3">
-                            <label for="inputDate" class="col-sm-2 col-form-label">Publish On<span class="text-danger"> *</span></label>
-                            <div class="col-sm-5">
-                                <input type="date" name="publish_date" id="publish_date" class="form-control datepicker">
-                            </div>                            
-                            <div class="col-sm-5">
-                                <input type="time" name="publish_time" id="publish_time" class="form-control">
-                            </div>
-                        </div>                                
-                        <fieldset class="row mb-3">                                                     
-                            <div class="col-sm-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="published" id="published"  {{ old('published') == 'on' ? 'checked' : '' }} />    
-                                    Published                                
-                                </div>
-                            </div>                                            
-                        </fieldset>
-                        <fieldset class="row mb-3">                                                     
-                            <div class="col-sm-4">
-                                <div class="form-check pt-1">
-                                    <input class="form-check-input" type="checkbox" name="comments_allowed" id="comments_allowed" {{ old('comments_allowed') == 'on' ? 'checked' : '' }}>  
-                                    Allow Comments                                  
-                                </div>                                
-                            </div>
-                                                       
-                        </fieldset>                                           
-                    </div>
-                </div>
-            </div>  
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-body"> 
                         <label class="col-sm-5 col-form-label">
                             Details<span class="text-danger"> *</span>
                             @error('body')
@@ -261,7 +252,7 @@
                             @enderror 
                         </label>  
                         <div class="col-sm-14">
-                            <input type="thidden" name="body" id="body" value="{{ old('body') }}">
+                            <input type="hidden" name="body" id="body" value="{{ old('body') }}">
                             <div id="post_body">{{ old('body') }}</div>
                         </div>                                              
                         <label for="inputPassword" class="col-sm-7 col-form-label">

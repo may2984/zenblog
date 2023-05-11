@@ -26,10 +26,11 @@
                 });
             };
 
-            $.fn.makeAuthorRow = function( count, name, id ){
+            $.fn.makeAuthorRow = function( count, name, pen_name, id ){
                 return `<tr id=${id}>
                             <th scope="row">${count}</th>
                             <td>${name}</td>                                       
+                            <td>${pen_name}</td>                                       
                             <td class="text-center">
                                 <i data-bs-target="#confirmDeleteModal" data-bs-toggle="modal" class="bi bi-trash3" id="${id}" alt="Delete"></i>
                                 <i class="bi bi-pen-fill edit-author" onclick="$.fn.editAuthor(${id});" alt="Edit"></i>
@@ -47,8 +48,9 @@
                     $.each(data, function( key, value ){                            
                         var index = count++;
                         var name = value.full_name;
+                        var pen_name = value.pen_name;
                         var id = value.id;
-                        row += $.fn.makeAuthorRow(index, name, id);
+                        row += $.fn.makeAuthorRow(index, name, pen_name, id);
                                            
                     });   
                     
@@ -267,6 +269,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>                           
+                                    <th scope="col">Pen Name</th> 
                                     <th scope="col" class="text-center">Action</th>
                                 </tr>
                             </thead>

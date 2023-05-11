@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('blog_tag', function( Blueprint $table ) {
             $table->id();
+            $table->unsignedSmallInteger('user_id');
             $table->string('name', 100);
-            $table->enum('status',['1','0']);
-            $table->unsignedSmallInteger('tag_user_id');
+            $table->enum('status',['1','0']);            
             $table->timestamps($precision = 0);
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });

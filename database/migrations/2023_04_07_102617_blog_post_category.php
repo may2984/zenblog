@@ -13,9 +13,8 @@ return new class extends Migration
         Schema::create('blog_post_category', function( Blueprint $table ) {
             $table->id();
             $table->foreignIdFor(Post::class)->references('id')->on('blog_post')->cascadeOnDelete();
-            $table->foreignIdFor(BlogCategory::class)->references('id')->on('blog_category')->cascadeOnDelete();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->foreignId('category_id')->references('id')->on('blog_category')->cascadeOnDelete();            
+            $table->boolean('is_main_category')->default(0);
         });
     }
 

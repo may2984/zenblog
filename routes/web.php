@@ -34,7 +34,7 @@ Route::middleware(['logged.in'])->group(function() {
     Route::post('/admin/register/save', [AdminController::class, 'register'])->name('admin.register.save');
 });
 
-Route::prefix('admin')->middleware(['login.check'])->controller(AdminController::class)->group(function() {
+Route::prefix('admin')->middleware(['login.check'])->controller(AdminController::class)->group(function() {    
     Route::get('/', 'index')->name('admin');
     Route::get('dashboard', 'dashboard')->name('admin.dashboard');    
     Route::get('expense/add', 'add')->name('admin.expense.add');
@@ -69,6 +69,8 @@ Route::prefix('admin')->middleware(['login.check'])->controller(AuthorController
     Route::get('author/destroy/{id}', 'destroy')->name('author.delete');
     Route::get('author/edit/{id}', 'edit')->name('author.edit');
     Route::post('author/update/{id}', 'update')->name('author.update');
+
+    Route::get('author/all', 'index');
 });
 
 Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::class)->group(function() {

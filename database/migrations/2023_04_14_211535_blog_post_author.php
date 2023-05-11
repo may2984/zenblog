@@ -14,8 +14,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Post::class)->references('id')->on('blog_post')->cascadeOnDelete();
             $table->foreignIdFor(Author::class)->references('id')->on('blog_author')->cascadeOnDelete();            
-            $table->timestamps();   
-            $table->softDeletes();
         });         
     }
 

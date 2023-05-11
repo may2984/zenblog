@@ -16,6 +16,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Models\PostAuthor;
+use Illuminate\Support\Arr;
 
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +27,6 @@ class PostContoller extends Controller
     public function __construct()
     {
         DB::enableQueryLog();
-        # mayank
     }
 
     public function index(Request $request)
@@ -48,11 +48,6 @@ class PostContoller extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {        
         $blogCategories = BlogCategory::all();
@@ -66,12 +61,6 @@ class PostContoller extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StorePostRequest $request): RedirectResponse
     {
         $data = [   
@@ -86,75 +75,32 @@ class PostContoller extends Controller
             'published_at' => $request->publish_date.' '.$request->publish_time
         ];
 
-    //    dd( $request->input() );
-
-        $Post = new Post();
-
-        /**
-         * insert data using query builder, it will return last insert id         * 
-         * $post_id = DB::table('blog_post')->insertGetId( $data );
-        */
-
-        # To auto update the timestamps we have to use Eloquent ORM to save data, Query builder will not do this task
-
-        $stored = Post::create( $data );
-        $post_id = $stored->id;
-
-        if( !$post_id )
+        $post = $request->user()->posts()->create( $data );
+      
+        if( !$post )
         {
             return back()->with('error','Error! try again');
         }
         else
         {
-            $blog_category_ids = $request->blog_category;
+            /* Many to many relation sync */
+
+            # set the main category          
+            $post->categories()->attach( array( head( $request->blog_category ) => ['is_main_category' => 1] ) );
             
-            $count = 1;
+            # set the secondary category
+            $post->categories()->attach( collect( $request->blog_category )->slice(1) );
 
-            foreach($blog_category_ids AS $blog_category_id)
-            {
-                $PostBlogCategory = new PostBlogCategory;
+            # set the author
+            $post->authors()->attach($request->blog_author);
 
-                $PostBlogCategory->post_id = $post_id;
-                $PostBlogCategory->category_id = $blog_category_id;
-                if( $count ){
-                    $PostBlogCategory->is_main_category = 1;
-                    $count = 0;
-                }
-                $PostBlogCategory->save();
-            }
-
-            $blog_tag_ids = $request->blog_tag;
-            
-            foreach($blog_tag_ids AS $blog_tag_id)
-            {
-                $BlogPostTag = new BlogPostTag;
-
-                $BlogPostTag->post_id = $post_id;
-                $BlogPostTag->tag_id = $blog_tag_id;
-                $BlogPostTag->save();
-            }
-
-            $blog_author_ids = $request->blog_author;
-            
-            foreach($blog_author_ids AS $blog_author_id)
-            {
-                $BlogPostAuthor = new PostAuthor;
-
-                $BlogPostAuthor->post_id = $post_id;
-                $BlogPostAuthor->author_id = $blog_author_id;
-                $BlogPostAuthor->save();
-            }
+            # set the tag
+            $post->tags()->attach($request->blog_tag);            
 
             return back()->with('success','Post saved');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
@@ -162,32 +108,18 @@ class PostContoller extends Controller
 
     public function edit($id)
     {
-        $post = Post::find($id);
+        $post = Post::FindorFail($id);
 
-        /**
-         * Eager Loadin guser name
-         * $post = Post::with('user:id,name')->find($id);
-         * dd( $post->user->name );
-         */
-
-        # Fetch Author, Category and Tag
-        $blogAuthors = Author::all();
-        $blogCategories = BlogCategory::all();        
+        # dd($post->publish_time, $post->publish_date);
+            
         $blogTags = Tag::all();
+        $blogPostTags = $post->tags->pluck('id');
 
-        # Get all the Author, Category and Tag saved for this post
+        $blogPostAuthors = $post->authors->pluck('fullName','id');
+        $blogAuthors = Author::all()->whereNotIn( 'id', $blogPostAuthors->keys() );
 
-        $blogPostCategories = $post->categories->map(function( $categories ){
-            return $categories->id;
-        });
-
-        $blogPostTags = $post->tags->map(function( $tags ){
-            return $tags->id;
-        });
-
-        $blogPostAuthors = $post->authors->map(function( $authors ){
-            return $authors->id;
-        });        
+        $blogPostCategories = $post->categories->pluck('name','id');
+        $blogCategories = BlogCategory::all()->whereNotIn('id', $blogPostCategories );
 
         return view('admin.post.edit',[
             'post' => $post,
@@ -224,6 +156,18 @@ class PostContoller extends Controller
         }
         else
         {
+            # set the author
+            $post->authors()->sync($request->blog_author);
+
+            # set the main category
+            $post->categories()->sync( array( head($request->blog_category) => array( 'is_main_category' => 1 ) ) );
+
+            # set the rest of category
+            $post->categories()->attach( collect($request->blog_category)->slice(1) );
+
+            # set the tags
+            $post->tags()->sync($request->blog_tag);
+
             return redirect()->route('post.list')->with('success','Post edited');
         }
     }

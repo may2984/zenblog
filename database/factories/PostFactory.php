@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
- */
+use Illuminate\Support\Facades\Log;
+use App\Models\Post;
+
 class PostFactory extends Factory
 {
     /**
@@ -16,10 +16,12 @@ class PostFactory extends Factory
      */
     public function definition()
     {
+        $title = fake()->unique()->sentence();
+
         return [
             'user_id' => User::factory(),
-            'title'=> fake()->unique()->sentence(),
-            'slug'=> fake()->paragraph(2),
+            'title'=> $title,
+            'slug'=> fake()->slug(),
             'summary'=> fake()->paragraph(2),
             'body'=> fake()->text(),
             'meta_title'=> fake()->paragraph(1),
