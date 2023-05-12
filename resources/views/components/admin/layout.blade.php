@@ -342,6 +342,12 @@
           <span>Frontend</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/telescope" target="_blank">
+          <i class="bi bi-file-earmark"></i>
+          <span>Telescope</span>
+        </a>
+      </li>
     </ul>
   </aside>
 

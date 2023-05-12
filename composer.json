@@ -12,6 +12,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.6",
+        "laravel/telescope": "^4.14",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.12",
         "mberecall/kropify-laravel": "^1.0"
@@ -54,7 +55,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {

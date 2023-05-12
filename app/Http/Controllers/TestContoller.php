@@ -36,16 +36,21 @@ class TestContoller extends Controller
 
         */
 
-        $data = Post::find(2);
-        $categories = Post::getPostCategories($data);
+        
 
-        $x = Post::withCount('tags')->find(2);
+//        $x = Post::withCount('tags')->find(2);
 
-        dd($x->tags_count);
+        # $data = Post::find(2);
+
+        $data = Post::with('user', 'authors', 'tags', 'post_main_category')->find(2);
+        
+        # $categories = Post::getPostCategories($data);
+
+        
 
         return view('admin.test', [
             'posts' => $data,
-            'categories' => $categories
+          //  'categories' => $categories
         ]);
     }
 }

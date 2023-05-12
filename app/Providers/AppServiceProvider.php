@@ -26,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app->environment('local')) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+        
         Paginator::useBootstrapFive();
         
         Blade::directive('blog_date', function (string $expression) {            
@@ -33,7 +38,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Blade::directive('blog_url', function (array $expression) {
-            dd($expression);
             list($category, $slug, $post_id) = $expression;
             return "<?php echo env('POST_URL_PREFIX').$category; ?>";
         });
