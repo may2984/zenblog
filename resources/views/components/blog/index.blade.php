@@ -35,6 +35,8 @@
   <script src="{{ asset('frontend/assets/vendor/aos/aos.js') }}"></script>    
   <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 
+  @stack('scripts')
+
 </head>
 <body>
 

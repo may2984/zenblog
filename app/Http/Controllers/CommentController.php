@@ -16,6 +16,7 @@ class CommentController extends Controller
             $data = $request->validated();
 
             $data['post_id'] = (int) $request->post_id;
+            $data['comment_id'] = (int) $request->comment_id;
 
             $saved = (new Comment())->create( $data );
 

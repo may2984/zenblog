@@ -17,6 +17,7 @@ return new class extends Migration
         Schema::create('comments', function(Blueprint $table){
             $table->id();
             $table->foreignIdFor(Post::class)->references('id')->on('blog_post')->cascadeOnDelete();
+            $table->unsignedBigInteger('comment_id')->default(0);
             $table->string('name', 100);
             $table->string('email', 100);
             $table->string('message', 500);

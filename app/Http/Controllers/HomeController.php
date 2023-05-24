@@ -65,7 +65,14 @@ class HomeController extends Controller
         $post_id = $post->id;    
         $category = $blogCategory->url; 
         
-        $comments = Comment::select('name','message')->where( 'post_id', '=', $post_id )->orderByDesc('created_at')->get();
+        $comments = Comment::with('comments')
+                            ->select('id','name','message','created_at')
+                            ->where([
+                                ['post_id', '=', $post_id],
+                                ['comment_id', '=', 0]
+                             ])
+                            ->orderByDesc('created_at')
+                            ->get();
 
         # insert the view count       
         try {

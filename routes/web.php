@@ -34,11 +34,6 @@ Route::get('/tags/{blog_tag:name}', [HomeController::class, 'showTagPost']);
 # Comments
 Route::post('/add/post', [CommentController::class, 'store'])->name('post.comment');
 
-Route::get('/users', function () {
-    return new UserResource( User::all() );
-});
-
-
 Route::middleware(['logged.in'])->group(function() {
     Route::get('/admin/login', function() {
         return view('admin.login');
