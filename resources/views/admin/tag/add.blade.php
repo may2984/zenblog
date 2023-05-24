@@ -67,9 +67,9 @@
             <h5 class="card-title">Tag List<div class="float-end fs-8 text-success" id="header-message"></div></h5>   
             <div class="container">{{ $tags->links() }}</div>
             <div class="mb-3 mt-1">
-              <form method="get" action="{{ route('admin.tag.add') }}">
+              <form method="get" action="{{ route('tag.add') }}">
                 <div class="input-group"> 
-                  <a href="{{ route('admin.tag.add') }}" class="btn btn-primary" role="button">Reset</a>                                 
+                  <a href="{{ route('tag.add') }}" class="btn btn-primary" role="button">Reset</a>                                 
                   <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" name="search" value="{{ old('search') }}" />
                   <button type="submit" class="btn btn-primary">Search</button>                                
                 </div>              
@@ -101,7 +101,7 @@
                       <span class="badge bg-warning text-dark">Inactive</span>
                       @endif
                     </td>
-                    <td class="text-center">$</td>                                        
+                    <td class="text-center">{{ $tag->posts_count }}</td>                                        
                     <td class="text-center">
                       <a href="{{ route('admin.tag.edit', ['id' => $tag->id]) }}" class="edit-category link-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="bi bi-pen"></i></a>
                       <form method="post" action="{{ route('admin.tag.delete' , ['id' => $tag->id]) }}" id="delete_{{$tag->id}}" style="display: inline;">

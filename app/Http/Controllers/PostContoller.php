@@ -16,6 +16,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Http\RedirectResponse;
 use App\Models\PostAuthor;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 use Illuminate\Support\Facades\DB;
@@ -35,11 +36,17 @@ class PostContoller extends Controller
         
         if( Str::of( $search )->trim()->isNotEmpty() )
         {
-            $posts = Post::select('id', 'title', 'published')->where( 'title', 'LIKE', '%'.$search.'%' )->orderBy('id', 'DESC')->paginate(10)->withQueryString();            
+            # eager loading the relations using 'with'
+            $posts = Post::with('authors:first_name,last_name')
+                                                                ->select('id', 'title', 'published')
+                                                                ->where( 'title', 'LIKE', '%'.$search.'%' )->orderBy('id', 'DESC')
+                                                                ->paginate(10)
+                                                                ->withQueryString();            
         }
         else
         {
-            $posts = Post::select('id', 'title', 'published')->orderBy('id', 'DESC')->paginate(10);
+            # eager loading the relations using 'with'
+            $posts = Post::with('authors:first_name,last_name')->select('id', 'title', 'published')->orderBy('id', 'DESC')->paginate(10);
         }        
         
         return view('admin.post.list', [
@@ -57,7 +64,9 @@ class PostContoller extends Controller
         return view('admin.post.create', [
             'blogCategories' => $blogCategories,
             'blogAuthors' => $blogAuthors,
-            'tags' => $tags 
+            'tags' => $tags, 
+            'current_date' => Carbon::now()->format('Y-m-d'),
+            'current_time' => Carbon::now()->format('H:i')
         ]);
     }
 
@@ -72,8 +81,10 @@ class PostContoller extends Controller
             'meta_title' => $request->meta_title,
             'published' => $request->published == 'on' ? '1' : '0',
             'comments_allowed' => $request->comments_allowed == 'on' ? '1' : '0',
-            'published_at' => $request->publish_date.' '.$request->publish_time
+           'published_at' => $request->publish_date.' '.$request->publish_time
         ];
+
+        # dd($data);
 
         $post = $request->user()->posts()->create( $data );
       
@@ -109,8 +120,6 @@ class PostContoller extends Controller
     public function edit($id)
     {
         $post = Post::FindorFail($id);
-
-        # dd($post->publish_time, $post->publish_date);
             
         $blogTags = Tag::all();
         $blogPostTags = $post->tags->pluck('id');

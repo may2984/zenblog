@@ -173,7 +173,7 @@
                         <span class="badge bg-warning text-dark">Inactive</span>
                         @endif
                       </td>
-                      <td class="text-center">$</td>                  
+                      <td class="text-center">{{ $category->posts_count }}</td>                  
                       <td class="text-center handle" data-toggle="tooltip" data-placement="top" title="Order"><i class="bi bi-arrows-move"></i></td> 
                       <td class="text-center">
                         <a href="{{ route('admin.blog.category.edit' , ['id' => $category->id]) }}" class="edit-category link-secondary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="bi bi-pen"></i></a>

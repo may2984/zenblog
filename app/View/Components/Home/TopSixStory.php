@@ -14,8 +14,8 @@ class TopSixStory extends Component
 
     public function render()
     {
-        $posts = Post::published()->orderByDesc('published_at')->offset(1)->limit(6)->get();
-
+        $posts = Post::published()->orderByDesc('created_at')->offset(1)->limit(6)->get();
+        
         $posts->map(function( $posts ){
             $posts->category = Post::postMainCategory( $posts );            
             return $posts;

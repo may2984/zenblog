@@ -20,7 +20,7 @@ class Author extends Model
     public $timestamps = true;   
 
     protected $appends = [
-        'full_name',
+     //   'full_name',
     ];
 
     protected $casts = [
@@ -41,11 +41,6 @@ class Author extends Model
             get: fn (string $value) => ucfirst($value),
         );
     }
-
- /*    public function authors(): BelongsTo    
-    {
-        return $this->BelongsTo(PostAuthor::class);
-    } */
 
     public function user(): BelongsTo
     {

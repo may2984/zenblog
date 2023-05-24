@@ -140,7 +140,7 @@
 
             <li class="message-item">
               <a href="#">
-                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                <img src="{{ asset('backend/assets/img/messages-1.jpg') }}" alt="" class="rounded-circle">
                 <div>
                   <h4>Maria Hudson</h4>
                   <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -154,7 +154,7 @@
 
             <li class="message-item">
               <a href="#">
-                <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
+                <img src="{{ asset('backend/assets/img/messages-2.jpg') }}" alt="" class="rounded-circle">
                 <div>
                   <h4>Anna Nelson</h4>
                   <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -168,7 +168,7 @@
 
             <li class="message-item">
               <a href="#">
-                <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
+                <img src="{{ asset('backend/assets/img/messages-3.jpg') }}" alt="" class="rounded-circle">
                 <div>
                   <h4>David Muldon</h4>
                   <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -249,38 +249,30 @@
   <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ route('author.create') }}">
-          <i class="bi bi-dash-circle"></i>
-          <span>Author</span>
-        </a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link " href="{{ route('admin.dashboard') }}">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#category-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" href="{{ route('author.create') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Author</span>
         </a>
-        <ul id="category-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{ route('admin.blog.category.add') }}">
-              <i class="bi bi-circle"></i><span>Blog</span>
-            </a>
-          </li>        
-        </ul>
-        <a class="nav-link collapsed" data-bs-target="#tag-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Tag</span><i class="bi bi-chevron-down ms-auto"></i>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('category.add') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Category</span>
         </a>
-        <ul id="tag-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{ route('admin.tag.add') }}">
-              <i class="bi bi-circle"></i><span>Add</span>
-            </a>
-          </li>        
-        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('tag.add') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Tag</span>
+        </a>
+      </li>
+      <li class="nav-item">       
         <a class="nav-link collapsed" data-bs-target="#blog-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -312,6 +304,12 @@
           </li>       
         </ul>
       </li>     
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('home.page') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Home Page</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-error-404.html">
           <i class="bi bi-dash-circle"></i>

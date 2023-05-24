@@ -17,11 +17,11 @@ class TagController extends Controller
 
         if( ! Str::of( $search )->trim()->isEmpty() )
         {
-            $tags = Tag::select('id','name','status')->where( 'name', 'LIKE', $search.'%' )->orderBy('id', 'DESC')->paginate(4)->withQueryString();            
+            $tags = Tag::select('id','name','status')->withCount('posts')->where( 'name', 'LIKE', $search.'%' )->orderBy('id', 'DESC')->paginate(4)->withQueryString();            
         }
         else
         {
-            $tags = Tag::select('id','name','status')->orderBy('id', 'DESC')->paginate(20);
+            $tags = Tag::select('id','name','status')->withCount('posts')->orderBy('posts_count', 'DESC')->paginate(20);
         }
 
         return view('admin.tag.add', ['tags' => $tags]);
@@ -73,11 +73,11 @@ class TagController extends Controller
 
         if( !$saved )
         {
-            return redirect()->route('admin.tag.add')->with('error', 'Error try again');
+            return redirect()->route('tag.add')->with('error', 'Error try again');
         }
         else
         {
-            return redirect()->route('admin.tag.add')->with('success', 'Tag saved');
+            return redirect()->route('tag.add')->with('success', 'Tag saved');
         }
     }
 
@@ -131,7 +131,7 @@ class TagController extends Controller
         }
         else
         {
-            return redirect()->route('admin.tag.add')->with('success' , 'TAg updated');        
+            return redirect()->route('tag.add')->with('success' , 'TAg updated');        
         }
     }
 

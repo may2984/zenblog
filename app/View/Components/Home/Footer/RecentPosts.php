@@ -14,15 +14,18 @@ class RecentPosts extends Component
 
     public function render()
     {
-        $posts = Post::published()->orderByDesc('published_at')->take(5)->get();
+        $post = new Post; 
+        $posts = Post::with('post_main_category:name,url')
+                        ->select('id','title','slug','published_at')
+                        ->published()
+                        ->orderByDesc('published_at')
+                        ->take(5)
+                        ->get();
 
-        $posts->map(function( $posts ){
-            $posts->category = Post::postMainCategory( $posts );            
-            return $posts;
-        });
+        $post->setAuthors = false;
 
-        $data = [
-            'posts' => $posts
+        $data = [            
+            'posts' => $post->setPost( $posts ),
         ];
 
         return view('components.home.footer.recent-posts', $data);

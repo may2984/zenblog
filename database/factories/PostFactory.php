@@ -19,7 +19,7 @@ class PostFactory extends Factory
         $title = fake()->unique()->sentence();
 
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::all()->random()->id,
             'title'=> $title,
             'slug'=> fake()->slug(),
             'summary'=> fake()->paragraph(2),

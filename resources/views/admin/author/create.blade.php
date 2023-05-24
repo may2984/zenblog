@@ -11,9 +11,14 @@
         $(function(){     
 
             $('#rest-form').click(function(){
+                $.fn.resetForm();
+            });
+
+            $.fn.resetForm = function(){
+                $('#author-form')[0].reset();
                 $('#form-title').html('Add Author');
                 $('#author-form').attr('action', "{{ route('author.store') }}");
-            });
+            };
             
             $.fn.editAuthor = function( author_id ){                
                 $.get("{{ route('author.edit', '') }}/"+author_id, function(data, response){
@@ -38,6 +43,12 @@
                         </tr>`;
             };
 
+            jQuery.ajaxSetup({
+                beforeSend: function() {
+                    $('#author-list').html('<img src="{{ asset("backend/assets/img/Bars-1s-200px.gif") }}" height=50>');
+                },                
+            });
+
             $.fn.getAuthorList = function(){
 
                 $.get("{{ route('author.list') }}", function( data, response ){   
@@ -47,7 +58,7 @@
                     
                     $.each(data, function( key, value ){                            
                         var index = count++;
-                        var name = value.full_name;
+                        var name = value.first_name+' '+value.last_name;
                         var pen_name = value.pen_name;
                         var id = value.id;
                         row += $.fn.makeAuthorRow(index, name, pen_name, id);
@@ -126,7 +137,7 @@
                         if(response.type == 'success'){
                             var id = parseInt( response.id );
                             if( id > 0 ){
-                                $(form)[0].reset();
+                                $.fn.resetForm();
                                 $('#messages').html(response.message);
                                 $('#exampleModal').modal('show',  setTimeout(() => {                                
                                     $('#exampleModal').modal('hide');                                  
@@ -134,7 +145,7 @@
                                 }, "2500"));
                             }
                             else{                                  
-                                $(form)[0].reset();
+                                $.fn.resetForm();
                                 $('#messages').html(response.message);
                                 $.fn.getAuthorList();
                                 $('#exampleModal').modal('show',  setTimeout(() => {                                

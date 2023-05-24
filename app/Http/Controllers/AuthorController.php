@@ -50,6 +50,9 @@ class AuthorController extends Controller
             'pen_name.unique' => 'Short name already exists',                                        
         ]);
 
+        # in case there is no last name set it to blank
+        $validated['last_name'] = $request->last_name != '' ? $request->last_name : '';
+
         $saved = $request->user()->authors()->create($validated);
 
         if( !$saved )
@@ -119,7 +122,10 @@ class AuthorController extends Controller
 
         $author = Author::find( $id );
         $author->first_name = $request->first_name;
-        $author->last_name = $request->last_name;
+      
+        # in case there is no last name set it to blank
+        $author->last_name = $request->last_name != '' ? $request->last_name : '';
+
         $author->pen_name = $request->pen_name;
         $author->url = $request->url;
 

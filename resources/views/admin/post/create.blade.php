@@ -21,7 +21,7 @@
         .sortable li{
             margin: 0 5px 5px 5px;
             padding: 5px;
-            font-size: 1.2em;
+            font-size: 15px;
             width: 280px;
         }
 
@@ -51,7 +51,7 @@
             });
             
             $('#title').blur( function() {
-                var slug = $('#title').val().replace(/[^a-zA-Z0-9 ]/g, "").split(" ").join('-').toLowerCase();
+                var slug = $('#title').val().trim().replace(/[^a-zA-Z0-9 ]/g, "").split(" ").join('-').toLowerCase();
                 $('#slug').val( slug );
             });
 
@@ -208,22 +208,23 @@
                     <div class="card-body">                     
                         <div class="mt-4 mb-4">
                             <div class="form-check form-switch form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="published" role="switch" @checked( old('published') === true || old('published') === null )>
+                                <input class="form-check-input" type="checkbox" name="published" role="switch" @checked( old('published') === 'on' || old('published') == '' )>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Published</label>
                             </div>
                             <div class="form-check form-switch form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="comments_allowed" role="switch" @checked( old('comments_allowed') == '1' || old('comments_allowed') === null )>
+                                <input class="form-check-input" type="checkbox" name="comments_allowed" role="switch" @checked( old('comments_allowed') == 'on' || old('comments_allowed') == '' )>
                                 <label class="form-check-label" for="flexSwitchCheckChecked">Allow Comments</label>
+                                {{ old('published')  }}
                             </div>
                         </div> 
                         
                         <div class="row mb-3">
                             <label for="inputDate" class="col-sm-2 col-form-label">Publish On<span class="text-danger"> *</span></label>
                             <div class="col-sm-5">
-                                <input type="date" name="publish_date" id="publish_date" class="form-control datepicker" value="{{ old('publish_date') === null ? '11-05-2023' : old('publish_date') }}">    
+                                <input type="date" name="publish_date" id="publish_date" class="form-control datepicker" value="{{ old('publish_date') === null ? $current_date : old('publish_date') }}">    
                             </div>                            
                             <div class="col-sm-5">
-                                <input type="time" name="publish_time" id="publish_time" class="form-control" value="{{ old('publish_time') }}">
+                                <input type="time" name="publish_time" id="publish_time" class="form-control" value="{{ old('publish_time') == null ? $current_time : old('publish_time') }}">
                             </div>
                         </div>
                         <div class="row mb-3">

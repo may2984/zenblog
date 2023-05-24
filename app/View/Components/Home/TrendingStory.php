@@ -21,34 +21,27 @@ class TrendingStory extends Component
          * find out stories based on view counts
          */
         $trending = DB::table('blog_post')
-                    ->selectRaw('COUNT(blog_post_views.id) as views, blog_post.id')
-                    ->leftJoin('blog_post_views', 'blog_post.id', '=', 'blog_post_views.post_id')  
-                    ->where('published', '1')                     
-                    ->groupBy('blog_post.id')   
-                    ->orderByDesc('views')  
-                    ->take(5)                              
-                    ->get();
-      
+                                            ->selectRaw('COUNT(blog_post_views.id) as views, blog_post.id')
+                                            ->join('blog_post_views', 'blog_post.id', '=', 'blog_post_views.post_id')  
+                                            ->where('published', '1')                     
+                                            ->groupBy('blog_post.id')   
+                                            ->orderByDesc('views')  
+                                            ->take(5)                              
+                                            ->get();
+              
         if( $trending->count() ) 
         {
             $trendingPost = $trending->map( function( $trending ){
-                return $trending->id;
-            });
-
-            $post_ids = $trendingPost->all();    
-            
-        // dd( DB::getQueryLog()[0]['query'] );
-
-            $posts = Post::select('id', 'title', 'slug')->whereIn( 'id' , $post_ids )->get();
-
-            $posts->map(function( $posts ){
+                
+                $posts = Post::with('post_main_category:name,url', 'authors:id,first_name,last_name')->select('id', 'title', 'slug')->find( $trending->id );
                 $posts->category = Post::postMainCategory( $posts );
                 $posts->author = Post::getPostAuthors( $posts );
+
                 return $posts;
-            });     
+            });
         
             return view('components.home.trending-story',[
-                'posts' => $posts
+                'posts' => $trendingPost
             ]);
         }
         else

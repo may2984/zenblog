@@ -22,18 +22,13 @@ class BlogCategory extends Model
         'created_at' => 'datetime',
     ];
 
-    /*
-
-    public function name(): BelongsTo
-    {
-        return $this->belongsTo(PostBlogCategory::class);
-    }
-    */
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
-
+    public function posts(): BelongsToMany
+    {
+        return $this->BelongsToMany(Post::class, 'blog_post_category', 'category_id', 'post_id');
+    }
 }

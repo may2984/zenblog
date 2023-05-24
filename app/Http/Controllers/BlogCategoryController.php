@@ -11,7 +11,7 @@ class BlogCategoryController extends Controller
 {
     public function add() 
     {        
-        $blogCategory = BlogCategory::select('id','url','name','status','position')->orderBy('position')->get();
+        $blogCategory = BlogCategory::select('id','url','name','status','position')->withCount('posts')->orderBy('position')->get();
         return view('admin.blog.category.add', compact('blogCategory'));
     }
 
@@ -114,7 +114,7 @@ class BlogCategoryController extends Controller
         }
         else
         {
-            return redirect()->route('admin.blog.category.add')->with('success' , 'Category updated');
+            return redirect()->route('category.add')->with('success' , 'Category updated');
         }
     }
 

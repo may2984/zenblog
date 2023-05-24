@@ -10,6 +10,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
 use App\Models\Contact;
 use App\Http\Requests\StoreContactUsForm;
+use App\Models\BlogCategory;
+use App\Models\Comment;
+use Illuminate\Support\Facades\Log;
+use App\Models\Tag;
 
 class HomeController extends Controller
 {
@@ -28,40 +32,64 @@ class HomeController extends Controller
         return view('blog.contact');
     }
 
-    public function category()
+    public function category(BlogCategory $blog_category)
     {
-        return view('blog.category');
+        $category_posts = Post::with('authors')
+                            ->select('blog_post.id', 'blog_post.title', 'blog_post.slug', 'blog_post.summary', 'blog_post.published_at', 'category.url')
+                            ->join('blog_post_category AS post_category', 'post_category.post_id', '=', 'blog_post.id')
+                            ->join('blog_category AS category', function($join) use($blog_category){
+                                $join->on('category.id', '=', 'post_category.category_id')
+                                    ->where('category.url', '=', $blog_category->url);
+                      })
+                      ->latest('blog_post.created_at')
+                      ->paginate(5);                 
+
+        return view('blog.category', [
+            'categoryPosts' => $category_posts,
+            'categoryName' => $blog_category->name,           
+        ]);
     }
 
-    public function posts(Request $request, string $category,  string $slug, int $id) 
+    public function showTagPost(Tag $blog_tag)
+    {
+        dd($blog_tag);
+    }
+
+    public function post(Post $id)
     {        
-        $post_id = $request->id;    
+        dd($id);
+    }
 
-        # get the post
-        $post = Post::find( $post_id );                   
+    public function posts(BlogCategory $blogCategory, string $slug, Post $post, Request $request) 
+    {                
+        $post_id = $post->id;    
+        $category = $blogCategory->url; 
+        
+        $comments = Comment::select('name','message')->where( 'post_id', '=', $post_id )->orderByDesc('created_at')->get();
 
-        $category = Post::getPostCategories( $post );
+        # insert the view count       
+        try {
+            DB::table('blog_post_views')->insert([
+                'post_id' => $post_id,
+                'visitor_ip' => $request->ip(),
+                'user_agent' => $request->userAgent()
+            ]);
+
+            Post::find($post_id)->increment('view_count');
+
+        } catch (\Throwable $th) {
+            Log::error($th);
+        } 
+
+        $data = [
+            'post' => $post,
+            'comments' => $comments,
+            'comment_count' => $comments->count(),
+            'category' => $category,
+        ];
+
+        return view('blog.post', $data);      
        
-        if( ! is_null( $post ) )
-        {
-            # save page view
-            if( DB::table('blog_post')->where('id', $post_id)->exists() )
-            {
-                DB::table('blog_post_views')->insert( ['post_id' => $post_id ] );
-            }            
-
-            $data = [
-                'post' => $post,
-                'category' => $category
-            ];
-    
-            return view('blog.post', $data);
-
-        }
-        else
-        {            
-            return view('errors.404');
-        }
     }
 
     public function contactUs(StoreContactUsForm $request)

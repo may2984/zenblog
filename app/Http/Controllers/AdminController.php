@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogCategory;
+use App\Models\Order;
+use App\Models\Post;
+use App\Models\PostBlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +19,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function __construct( public int $categoryId = 0 )
+    {
+        
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -29,35 +38,6 @@ class AdminController extends Controller
         }
 
         return back()->with('error','Unable to authenticate user');
-
-        /*
-        $request->validate([
-            'email' => 'required',
-            'password' => 'required'            
-        ]);
-
-        $email = $request->email;
-        $password = $request->password;
-        
-        $user_info = DB::table('users')->select(['password','name','id'])->where('email' , $email)->first();
-
-        # dd($user_info);
-
-        $db_name = $user_info->name;    
-        $db_password = $user_info->password;     
-        $user_id = $user_info->id;     
-
-        if( Hash::check( $password , $db_password ) )
-        {
-            $request->session()->put('email', $email);
-            session(['email' => $email , 'name' => $db_name , 'user_id' => $user_id]);
-            return redirect()->route('admin.dashboard');
-        }
-        else
-        {
-            return back()->with('error','Unable to authenticate user');
-        }
-        */
     }
 
     public function register(Request $request)
@@ -101,6 +81,86 @@ class AdminController extends Controller
     public function dashboard()
     {
         return view('admin.dashboard');
+    }
+
+    public function getPostList(Request $request)
+    {
+        $this->categoryId = ( int ) $request->category_id;
+
+        $savedPosts = Post::with('post_main_category:name,url', 'authors:first_name,last_name')
+                            ->select('blog_post.id', 'blog_post.title', 'blog_post.published_at')
+                            ->join('order_post', function( $join ){
+                                $join->on('blog_post.id', '=', 'order_post.post_id')
+                                ->where('order_post.category_id', '=', $this->categoryId);
+                            })
+                            ->orderBy('order_post.position')
+                            ->get(); 
+        
+        $savedPostIds = $savedPosts->pluck('id')->toArray();
+
+        if( $this->categoryId > 0 )
+        {
+            $posts = Post::with('authors:first_name,last_name')
+                            ->select('blog_post.id', 'blog_post.title', 'blog_post.published_at', 'category.name', 'category.url')
+                            ->join('blog_post_category AS post_category', 'blog_post.id', '=', 'post_category.post_id')
+                            ->join('blog_category AS category', function($join){
+                                $join->on('category.id', '=', 'post_category.category_id')
+                                ->where('category.id', '=', $this->categoryId);                               
+                            })
+                            ->whereNotIn('blog_post.id', $savedPostIds)
+                            ->where('blog_post.published', '=', '1')
+                            ->orderByDesc('blog_post.id')
+                            ->get();
+        }
+        else
+        {
+            $posts = Post::with('post_main_category:name','authors:first_name,last_name')
+                            ->select('id','title', 'published_at')
+                            ->whereNotIn('id', $savedPostIds)
+                            ->published()
+                            ->latest()
+                            ->take(15)
+                            ->get();
+        }        
+
+        return response()->json([
+            'posts' => $posts,
+            'savedPosts' => $savedPosts
+        ]);
+    }
+
+    public function blogHomePageNews()
+    {       
+        $postCategory = BlogCategory::select('id','name')->orderBy('name')->get();
+
+        return view('admin.blog.homepage.list', [          
+            'postCategory' => $postCategory
+        ]);
+    }
+    public function savePostList(Request $request)
+    {
+        $categoryId = $request->category_id;
+        $sortedIds = json_decode($request->sorted_ids); 
+
+        DB::table('order_post')->where('category_id', '=', $categoryId)->delete();
+
+        foreach( $sortedIds as $post_id => $position)
+        { 
+            $data[] = [
+                'category_id' => $categoryId,
+                'post_id' => $post_id,                      
+                'position' => $position,
+            ];
+        }  
+
+        $saved = Order::insert( $data );
+        
+        if ($saved) {
+            echo 'Position Saved';
+        }
+        else {
+            echo 'Error! Saving Post Position';
+        }        
     }
 
     public function get_thumb_image_name( $image_file )
