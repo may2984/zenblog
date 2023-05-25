@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>{{ config('app.name') }} - {{ $title }}</title>
+  <title>{{ config('app.name') }} - {{ $title ?? 'No Title' }}</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
   <link href="{{ asset('backend/assets/img/favicon.png') }}" rel="icon">
@@ -254,6 +254,23 @@
           <span>Dashboard</span>
         </a>
       </li>
+      <li class="nav-item">       
+        <a class="nav-link collapsed" data-bs-target="#banner-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Banner</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="banner-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{{ route('banner.create') }}">
+              <i class="bi bi-circle"></i><span>Create</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('banner.index') }}">
+              <i class="bi bi-circle"></i><span>List</span>
+            </a>
+          </li>
+        </ul>      
+      </li>  
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ route('author.create') }}">
           <i class="bi bi-dash-circle"></i>
@@ -272,7 +289,7 @@
           <span>Tag</span>
         </a>
       </li>
-      <li class="nav-item">       
+     {{-- <li class="nav-item">       
         <a class="nav-link collapsed" data-bs-target="#blog-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -287,7 +304,8 @@
               <i class="bi bi-circle"></i><span>Add</span>
             </a>
           </li>
-        </ul>        
+        </ul>      
+      </li>  --}}
         <a class="nav-link collapsed" data-bs-target="#post-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Post</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>

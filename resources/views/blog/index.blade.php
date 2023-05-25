@@ -1,8 +1,10 @@
 <x-blog.index>
    
-    <section id="hero-slider" class="hero-slider">@include('blog.slider')</section>
+    <section id="hero-slider" class="hero-slider">
+        <x-home-banner />
+    </section>
 
-    <section id="posts" class="posts">
+  {{--  <section id="posts" class="posts">
         <div class="container" data-aos="fade-up">
             <div class="row g-5">
                 <x-home-page-story-block-first />
@@ -41,6 +43,6 @@
                 <x-home-page-story-block-last category-name='Lifestyle' />  
             </div>
         </div>
-    </section>
+    </section> --}}
     
 </x-blog.index>

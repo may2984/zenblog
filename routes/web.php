@@ -1,29 +1,35 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request;
 
-use App\Http\Controllers\BlogCategoryController;
 use Illuminate\Http\Middleware\AlreadyLoggedIn;
 use Illuminate\Http\Middleware\LoginCheck;
-use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\PostContoller;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\TestContoller;
+
+use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TestContoller;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\PostContoller;
 use App\Http\Resources\UserResource;
 use App\Models\BlogCategory;
 use App\Models\Post;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\Request;
 use App\Models\User;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/article/{blog_category:url}/{slug}/{post:id}', [HomeController::class, 'posts'])->name('post.url')->scopeBindings();
+
+Route::get('/article/{blog_category:url}/{slug}/{post:id}', [HomeController::class, 'posts'])        
+        ->name('post.url')
+        ->scopeBindings();
+
 Route::get('/article/{post:id}', [HomeController::class, 'post']);
 Route::get('/category/{blog_category:url}', [HomeController::class, 'category'])->name('category.url');
 Route::post('contact/us', [HomeController::class, 'contactUs'])->name('blog.contact');
@@ -33,6 +39,19 @@ Route::get('/tags/{blog_tag:name}', [HomeController::class, 'showTagPost']);
 
 # Comments
 Route::post('/add/post', [CommentController::class, 'store'])->name('post.comment');
+
+# Users
+Route::get('/user/{id}', function (Request $request, string $id) {
+    return 'User '.$id;
+});
+
+Route::get('/user/{name?}', function (string $name = null) {
+    return $name;
+});
+
+Route::get('/user/{name?}', function (string $name = 'John') {
+    return $name;
+});
 
 Route::middleware(['logged.in'])->group(function() {
     Route::get('/admin/login', function() {
@@ -61,6 +80,10 @@ Route::prefix('admin')->middleware(['login.check'])->controller(AdminController:
     Route::post('blog/home/news/save', 'savePostList')->name('category.post.save');
 });
 
+Route::prefix('admin')->middleware(['login.check'])->group(function(){
+    Route::resource('banner', BannerController::class);
+});
+
 Route::prefix('admin')->middleware(['login.check'])->controller(BlogCategoryController::class)->group(function() {    
     Route::get('blog/category/add', 'add')->name('category.add');
     Route::post('blog/category/store', 'store')->name('admin.blog.category.store');
@@ -85,7 +108,6 @@ Route::prefix('admin')->middleware(['login.check'])->controller(AuthorController
     Route::get('author/destroy/{id}', 'destroy')->name('author.delete');
     Route::get('author/edit/{id}', 'edit')->name('author.edit');
     Route::post('author/update/{id}', 'update')->name('author.update');
-
     Route::get('author/all', 'index');
 });
 
@@ -96,10 +118,7 @@ Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::c
     Route::get('post/edit/{id}', 'edit')->name('post.edit');
     Route::post('post/update/{id}', 'update')->name('post.update');
     Route::post('post/destroy/{id}', 'destroy')->name('post.delete');
-
     Route::get('post/toggle/publish/{status}/{id}', 'togglePublish')->name('post.toggle.publish');
-
-
     Route::post('test/upload', 'upload')->name('post.upload');
 });
 

@@ -664,4 +664,4 @@
 
     </div>
   </section>
-</x-layout>
+</x-admin.layout>
