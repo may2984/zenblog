@@ -28,6 +28,14 @@ Route::get('/article/{post:id}', [HomeController::class, 'post']);
 Route::get('/category/{blog_category:url}', [HomeController::class, 'category'])->name('category.url');
 Route::post('contact/us', [HomeController::class, 'contactUs'])->name('blog.contact');
 
+Route::get('pay/instamojo', [TestContoller::class, 'payInstaMojo']);
+Route::get('pay/instamojo/gatewayorder', [TestContoller::class, 'instaMojoCreateGatewayOrder']);
+Route::get('instamojo/success', [TestContoller::class, 'instaMojoSuccess']);
+Route::get('instamojo/details', [TestContoller::class, 'instaMojoRequestDetails']);
+
+Route::get('pay/razorpay', [TestContoller::class, 'payRazorPay']);
+Route::get('razorpay/success', [TestContoller::class, 'RazorPaySuccess']);
+
 # Tags
 Route::get('/tags/{blog_tag:name}', [HomeController::class, 'showTagPost']);
 
@@ -64,7 +72,7 @@ Route::prefix('admin')->middleware(['login.check'])->controller(AdminController:
 Route::prefix('admin')->middleware(['login.check'])->controller(BlogCategoryController::class)->group(function() {    
     Route::get('blog/category/add', 'add')->name('category.add');
     Route::post('blog/category/store', 'store')->name('admin.blog.category.store');
-    Route::get('blog/category/edit/{id}', 'edit')->name('admin.blog.category.edit');
+    Route::get('blog/category/edit/{tag}', 'edit')->name('admin.blog.category.edit');
     Route::post('blog/category/edit/save', 'update')->name('admin.blog.category.edit.save');
     Route::post('blog/category/delete/{id}', 'delete')->name('admin.blog.category.dalete');
     Route::post('blog/category/sort/', 'sort')->name('admin.blog.category.sort');

@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'instamojo' => [
+        'client_id' => env('INSTA_MOJO_CLIENT_ID'),
+        'client_secret' => env('INSTA_MOJO_SECRET_KEY'),
+    ],
+
 ];

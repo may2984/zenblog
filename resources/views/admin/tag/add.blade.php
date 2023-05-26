@@ -70,7 +70,7 @@
               <form method="get" action="{{ route('tag.add') }}">
                 <div class="input-group"> 
                   <a href="{{ route('tag.add') }}" class="btn btn-primary" role="button">Reset</a>                                 
-                  <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" name="search" value="{{ old('search') }}" />
+                  <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" name="search" value="{{ $search }}" />
                   <button type="submit" class="btn btn-primary">Search</button>                                
                 </div>              
               </form>

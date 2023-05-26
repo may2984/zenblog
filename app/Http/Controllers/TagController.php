@@ -2,74 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\TagStore;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Tag;
+
+use App\Services\TagService;
+
 use App\Models\User;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use App\Models\Tag;
+
+# use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class TagController extends Controller
 {
     public function add(Request $request) 
     {  
+        $query = Tag::select('id','name','status')->withCount('posts')->orderBy('posts_count', 'DESC');
+
         $search = $request->search;
+        # if the search strgin is not empty        
+        if( !Str::of($search)->trim()->isEmpty() ){
+            $query->where( 'name', 'LIKE', $search.'%' );            
+        } 
 
-        if( ! Str::of( $search )->trim()->isEmpty() )
-        {
-            $tags = Tag::select('id','name','status')->withCount('posts')->where( 'name', 'LIKE', $search.'%' )->orderBy('id', 'DESC')->paginate(4)->withQueryString();            
-        }
-        else
-        {
-            $tags = Tag::select('id','name','status')->withCount('posts')->orderBy('posts_count', 'DESC')->paginate(20);
-        }
+        $tags =  $query->paginate()->withQueryString();
 
-        return view('admin.tag.add', ['tags' => $tags]);
+        return view('admin.tag.add', [
+            'tags' => $tags,
+            'search' => $search
+        ]);
     }
 
-    public function store(Request $request) 
+    public function store(TagStore $request, TagService $service) 
     {
-        $name = $request->name;
-
-        # check if the tags contain comma, space or hash
-
-        if( Str::of($name)->contains([',', '#', ' ']) )
-        {   
-            $request->validate([
-                'name' => 'required'
-            ],[
-                'name.required' => 'Enter tags',
-            ]); 
-
-            # split the tags using comma, space and hash
-            $tagArray = Str::of($name)->split("/[\s,#]+/");
-
-            $count = 0;
-            
-            foreach($tagArray as $word)
-            {                 
-                if( Str::of($word)->trim()->isNotEmpty() )          
-                {
-                    $count = $count + 1;    
-                    $tags[$count]['name'] = Str::of($word)->trim();
-                    $tags[$count]['status'] = $request->status;
-                }                
-            }
-
-            $saved = $request->user()->tags()->createMany( $tags );               
-        }
-        else
-        {
-            $validated = $request->validate([
-                'name' => 'required|max:20|unique:blog_tag',
-            ],[
-                'name.required' => 'Enter name',
-                'name.max' => 'Max. 20 character',
-                'unique' => 'Duplicate tag',
-            ]); 
-
-            $saved = $request->user()->tags()->create($validated);
-        }          
+        $saved = $service->store( $request );
 
         if( !$saved )
         {
@@ -97,13 +64,9 @@ class TagController extends Controller
         }
     }
 
-    public function edit(Request $request)
+    public function edit(Tag $id)
     {
-        $id = $request->id;
-
-        $tag = Tag::find($id);
-
-        return view('admin.tag.edit', ['tag' => $tag]);
+        return view('admin.tag.edit', ['tag' => $id]);
     }
 
     public function modify(Request $request)
