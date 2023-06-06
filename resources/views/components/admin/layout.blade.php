@@ -254,23 +254,18 @@
           <span>Dashboard</span>
         </a>
       </li>
-      <li class="nav-item">       
-        <a class="nav-link collapsed" data-bs-target="#banner-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Banner</span><i class="bi bi-chevron-down ms-auto"></i>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('banner.create') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Banner</span>
         </a>
-        <ul id="banner-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{ route('banner.create') }}">
-              <i class="bi bi-circle"></i><span>Create</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('banner.index') }}">
-              <i class="bi bi-circle"></i><span>List</span>
-            </a>
-          </li>
-        </ul>      
-      </li>  
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('dropzone1') }}">
+          <i class="bi bi-dash-circle"></i>
+          <span>Dropzone 1</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ route('author.create') }}">
           <i class="bi bi-dash-circle"></i>
@@ -338,6 +333,12 @@
         <a class="nav-link collapsed" href="{{ route('test') }}">
           <i class="bi bi-file-earmark"></i>
           <span>Test</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('test2') }}">
+          <i class="bi bi-file-earmark"></i>
+          <span>Test2</span>
         </a>
       </li>
       <li class="nav-item">

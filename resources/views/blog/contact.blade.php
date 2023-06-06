@@ -3,7 +3,7 @@
         <div class="container" data-aos="fade-up">
             <div class="row">
                 <div class="col-lg-12 text-center mb-5"><h1 class="page-title">Contact us</h1></div>
-            </div>
+            </div>            
             <div class="row gy-4">
                 <div class="col-md-4">
                     <div class="info-item">

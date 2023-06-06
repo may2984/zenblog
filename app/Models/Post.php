@@ -100,11 +100,6 @@ class Post extends Model
         return $this->belongsToMany(BlogCategory::class, 'blog_post_category', 'post_id', 'category_id')->wherePivot('is_main_category', 0);
     }
 
-    public function order(): HasMany
-    {
-        return $this->HasMany(Order::class)->orderBy('position');
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

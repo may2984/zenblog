@@ -36,12 +36,6 @@ return [
             'throw' => false,
         ],
 
-        'admin' => [
-            'driver' => 'local',
-            'root' => storage_path('app/admin'),
-            'throw' => false,
-        ],
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -77,7 +71,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('admin') => storage_path('app/admin'),
+        public_path('banners') => storage_path('app/public/banners'),
     ],
 
 ];

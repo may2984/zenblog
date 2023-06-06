@@ -162,7 +162,7 @@
                   <tbody id="category-list">                   
                     @php($count = 0)              
                     @foreach($blogCategory AS $category)                    
-                    <tr id="{{ $category->id }}" class="category-name">                      
+                    <tr id="{{ $category->id }}" class="w">                      
                       <th scope="row">{{ ++$count }}</th>
                       <td>{{ $category->name }}</td>                                         
                       <td>{{ $category->url }}</td>    

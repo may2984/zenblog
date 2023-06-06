@@ -4,7 +4,7 @@
         <x-home-banner />
     </section>
 
-  {{--  <section id="posts" class="posts">
+   <section id="posts" class="posts">
         <div class="container" data-aos="fade-up">
             <div class="row g-5">
                 <x-home-page-story-block-first />
@@ -12,7 +12,7 @@
         </div>
     </section>
  
-    <section class="category-section">
+ {{--    <section class="category-section">
         <div class="container" data-aos="fade-up">
             <div class="section-header d-flex justify-content-between align-items-center mb-5">
                 <x-see-all-category category='Culture' />

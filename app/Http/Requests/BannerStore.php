@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Banner extends FormRequest
+class BannerStore extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,6 @@ class Banner extends FormRequest
     {
         return [
             'banner_image' => 'required',
-            'banner_text' => 'required',
         ];
     }
 }

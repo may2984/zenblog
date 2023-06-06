@@ -82,6 +82,9 @@ Route::prefix('admin')->middleware(['login.check'])->controller(AdminController:
 
 Route::prefix('admin')->middleware(['login.check'])->group(function(){
     Route::resource('banner', BannerController::class);
+    Route::post('banner/sort/', [BannerController::class,'sort'])->name('banner.sort');
+    Route::post('banner/upload', [BannerController::class,'upload'])->name('banner.upload');
+    Route::get('banner/toggle/status/{status}/{id}', [BannerController::class,'toggleStatus']);
 });
 
 Route::prefix('admin')->middleware(['login.check'])->controller(BlogCategoryController::class)->group(function() {    
@@ -122,7 +125,22 @@ Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::c
     Route::post('test/upload', 'upload')->name('post.upload');
 });
 
+# Crop
+
+Route::post('/test/crop', [TestContoller::class, 'crop']);
+Route::post('/test/crop2', [TestContoller::class, 'crop2']);
+
 Route::get('admin/test',[TestContoller::class, 'index'])->name('test');
+Route::get('admin/test2',[TestContoller::class, 'test2'])->name('test2');
+
+# drop zone
+
+Route::get('/admin/dropzone1', function(){
+    return view('admin.dropzone1');
+})->name('dropzone1');
+
+Route::post('/upload/drpozone1', [TestContoller::class, 'uploadDropzone1']);
+
 Route::get('tags', [TagController::class, 'getTags'])->name('tags');
 
 Route::get('livewire', function() {
