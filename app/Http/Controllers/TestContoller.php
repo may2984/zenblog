@@ -59,6 +59,7 @@ class TestContoller extends Controller
         ]);
         
     }
+    // 16 - 200, 17 - 100, 18 - 150, 19 - 100, 20 - 150
 
     public function test2()
     {        

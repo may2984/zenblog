@@ -323,6 +323,30 @@
           <span>Home Page</span>
         </a>
       </li>
+      <li class="nav-item">       
+        <a class="nav-link collapsed" data-bs-target="#member-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Member</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+          <ul id="member-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">         
+            <li>
+              <a href="{{ route('member.create') }}">
+                <i class="bi bi-circle"></i><span>Add</span>
+              </a>
+            </li>
+          </ul>      
+      </li>
+      <li class="nav-item">       
+        <a class="nav-link collapsed" data-bs-target="#trip-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Trip</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+          <ul id="trip-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">         
+            <li>
+              <a href="{{ route('trip.create') }}">
+                <i class="bi bi-circle"></i><span>Add</span>
+              </a>
+            </li>
+          </ul>      
+      </li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-error-404.html">
           <i class="bi bi-dash-circle"></i>

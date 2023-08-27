@@ -16,9 +16,11 @@ class Tag extends Model
 
     protected $fillable = ['name','status'];
 
+    protected $dateFormat = 'U';
+
     # set default values
     protected $attributes = [
-      'status' => true,
+      'status' => '0',
     ];
 
     public $timestamps = true;

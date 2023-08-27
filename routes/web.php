@@ -14,9 +14,12 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\TestContoller;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PostContoller;
+use App\Http\Controllers\TripController;
+
 use App\Http\Resources\UserResource;
 use App\Models\BlogCategory;
 use App\Models\Post;
@@ -123,6 +126,20 @@ Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::c
     Route::post('post/destroy/{id}', 'destroy')->name('post.delete');
     Route::get('post/toggle/publish/{status}/{id}', 'togglePublish')->name('post.toggle.publish');
     Route::post('test/upload', 'upload')->name('post.upload');
+});
+
+Route::prefix('admin')->middleware(['login.check'])->group(function(){
+    Route::resources([
+        'trip' => TripController::class,
+    ]);    
+    Route::get('trip/toggle/status/{status}/{id}', [TripController::class, 'toggleStatus']);
+});
+
+Route::prefix('admin')->middleware(['login.check'])->group(function(){
+    Route::resources([
+        'member' => MemberController::class,
+    ]);
+    Route::get('member/toggle/status/{status}/{id}', [MemberController::class, 'toggleStatus']);
 });
 
 # Crop
