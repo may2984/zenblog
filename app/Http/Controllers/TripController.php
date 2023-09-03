@@ -28,15 +28,15 @@ class TripController extends Controller
      */
     public function index()
     {
-        $trips = Model::select('id','name','status')->get()->toArray();
-        $members = Member::select('id','name','status')->get()->toArray();
+        $trips = Model::select('id', 'name', 'status')->get()->toArray();
+        $members = Member::select('id', 'name', 'status')->get()->toArray();
 
         $data = [
             'trips' => $trips,
             'members' => $members
         ];
 
-        return response()->json( $data );
+        return response()->json($data);
     }
 
     /**
@@ -46,7 +46,7 @@ class TripController extends Controller
      */
     public function create()
     {
-        return view('admin.'.$this->folder.'.create',[
+        return view('admin.' . $this->folder . '.create', [
             'label' => $this->label,
         ]);
     }
@@ -62,28 +62,24 @@ class TripController extends Controller
         $validated = $request->validated();
 
         try {
-            $created = Model::create([ 
+            $created = Model::create([
                 'name' => $request->input('name'),
             ]);
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             throw $th;
         }
-        
-        if( !$created )
-        {
-            return response()->json(['error' , 'message' => 'Error! Try again']);        
-        }
-        else
-        {
+
+        if (!$created) {
+            return response()->json(['error', 'message' => 'Error! Try again']);
+        } else {
             // if a trip is created add its members
-            $created->members()->attach( $request->input('members') );
+            $created->members()->attach($request->input('members'));
             return response()->json([
                 'success',
-                'message' => $this->label.' added',
-                'data' => [ $created->fresh() ]
-            ]);        
-        }        
+                'message' => $this->label . ' added',
+                'data' => [$created->fresh()]
+            ]);
+        }
     }
 
     /**
@@ -105,9 +101,9 @@ class TripController extends Controller
      */
     public function edit($id)
     {
-        $data = Model::select('id','name','status')->find($id);
+        $data = Model::select('id', 'name', 'status')->find($id);
 
-        return view('admin.'.$this->folder.'.edit',[
+        return view('admin.' . $this->folder . '.edit', [
             'data' => $data,
             'label' => $this->label,
         ]);
@@ -124,16 +120,13 @@ class TripController extends Controller
     {
         $model = Model::find($id);
 
-        $updated = $model->update([                                            
-                    'name' => $request->get('name'),
-                   ]);
+        $updated = $model->update([
+            'name' => $request->get('name'),
+        ]);
 
-        if( $updated )
-        {
-            return redirect(route($this->folder.'.create'))->with('success', $this->label.' edited');
-        }
-        else
-        {  
+        if ($updated) {
+            return redirect(route($this->folder . '.create'))->with('success', $this->label . ' edited');
+        } else {
             return redirect()->back()->with('error', 'Error! try again');
         }
     }
@@ -148,9 +141,9 @@ class TripController extends Controller
     {
         $deleted = Model::where('id', $id)->delete();
 
-        if($deleted){
+        if ($deleted) {
             return response()->json([
-                'success', $this->label.' deleted'
+                'success', $this->label . ' deleted'
             ]);
         }
 
@@ -160,13 +153,25 @@ class TripController extends Controller
     }
 
     public function toggleStatus($status, $id)
-    {   
+    {
         $updated = Model::where('id', $id)->update(['status' => $status]);
-        
-        if( !$updated ){
+
+        if (!$updated) {
             return response()->json(['type' => 'error']);
         }
 
-        return response()->json(['type' => 'success']);        
+        return response()->json(['type' => 'success']);
+    }
+
+    public function tripList()
+    {
+        $data = Model::with('members:name,created_at')->select('id', 'name', 'status')->get();
+
+        // dd($data);
+
+        return view('admin.' . $this->folder . '.list', [
+            'data' => $data,
+            'label' => $this->label,
+        ]);
     }
 }

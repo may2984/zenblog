@@ -130,10 +130,12 @@ Route::prefix('admin')->middleware(['login.check'])->controller(PostContoller::c
 
 Route::prefix('admin')->middleware(['login.check'])->group(function(){
     Route::resources([
-        'trip' => TripController::class,
+       'trip' => TripController::class,
     ]);    
     Route::get('trip/toggle/status/{status}/{id}', [TripController::class, 'toggleStatus']);
+    Route::get('admin/trip/list', [TripController::class, 'tripList'])->name('trip.list');
 });
+
 
 Route::prefix('admin')->middleware(['login.check'])->group(function(){
     Route::resources([

@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up()
     {
-       Schema::create('trip_members', function( Blueprint $table ){
+      Schema::create('trip_members', function( Blueprint $table ){
         $table->id();
         $table->foreignIdFor(Trip::class)->references('id')->on('trips')->cascadeOnDelete();
         $table->foreignIdFor(Member::class)->references('id')->on('members')->cascadeOnDelete();

@@ -345,6 +345,13 @@
                 <i class="bi bi-circle"></i><span>Add</span>
               </a>
             </li>
+          </ul>  
+          <ul id="trip-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">         
+            <li>
+              <a href="{{ route('trip.list') }}">
+                <i class="bi bi-circle"></i><span>List</span>
+              </a>
+            </li>
           </ul>      
       </li>
       <li class="nav-item">
