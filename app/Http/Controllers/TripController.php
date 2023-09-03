@@ -10,6 +10,7 @@ use App\Models\Member;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class TripController extends Controller
 {
@@ -167,11 +168,26 @@ class TripController extends Controller
     {
         $data = Model::with('members:name,created_at')->select('id', 'name', 'status')->get();
 
-        // dd($data);
-
         return view('admin.' . $this->folder . '.list', [
             'data' => $data,
             'label' => $this->label,
         ]);
+    }
+
+    public function massDelete(Request $request)
+    {
+        $id =  Arr::join($request->input('trip_list_checkbox'), ",");
+
+        $deleted = 1; //Model::destroy($id);
+
+        if ($deleted) {
+            return response()->json([
+                'success', $this->label . ' Deleted',
+            ]);
+        } else {
+            return response()->json([
+                'error', 'Error! Try again'
+            ]);
+        }
     }
 }

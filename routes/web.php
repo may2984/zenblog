@@ -133,7 +133,8 @@ Route::prefix('admin')->middleware(['login.check'])->group(function(){
        'trip' => TripController::class,
     ]);    
     Route::get('trip/toggle/status/{status}/{id}', [TripController::class, 'toggleStatus']);
-    Route::get('admin/trip/list', [TripController::class, 'tripList'])->name('trip.list');
+    Route::get('trip/list', [TripController::class, 'tripList'])->name('trip.list');
+    Route::post('trip/massDelete', [TripController::class, 'massDelete'])->name('trip.massDelete');
 });
 
 

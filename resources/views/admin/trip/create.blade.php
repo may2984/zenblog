@@ -133,7 +133,7 @@
 
       $.get(url, function(data, response) {
 
-        $.fn.setMembersOption(data.members);  
+        $.fn.setMembersOption(data.members);
 
         var headerLabels = {
           "delete": [{
@@ -175,7 +175,7 @@
           var status = value.status;
           dataHeader += $.fn.makeRow(id, name, status);
         });
-        
+
         $('#list').html(dataHeader);
 
         var deleteButton = ``;
@@ -193,28 +193,6 @@
 
       });
     };
-
-    $.fn.deleteAll = function() {
-
-      idJson = [];
-
-      var numberOfCheckedTrips = $(".trip_list_checkbox").filter(':checked').length;
-
-      if (!numberOfCheckedTrips) {
-        alert("Please check at least one row to delete");
-        return false;
-      }
-
-      $(".trip_list_checkbox").each(function(index, value) {
-
-        if ($(this).prop("checked")) {
-          $.fn.delete(this.value);
-        }
-
-      });
-      
-       $.fn.massDelete( idJson );
-    }
 
     $.fn.getStatus = function(status, id) {
 
@@ -279,19 +257,37 @@
       }
     }
 
-    $.fn.massDelete = function(idJson) {
+    $.fn.deleteAll = function() {
+
+      idJson = [];
+
+      var numberOfCheckedTrips = $(".trip_list_checkbox").filter(':checked').length;
+
+      if (!numberOfCheckedTrips) {
+        alert("Please check at least one row to delete");
+        return false;
+      }
+
+      $.fn.massDelete();
+    }
+
+
+    $.fn.massDelete = function() {
 
       if (confirm('Are you sure you want to delete it?')) {
 
-        var csrf = form.find('input[name=_token]').val();
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+          }
+        });
 
-        console.log(idJson);
+        var data = $( '.trip_list_checkbox' ).serialize();
 
         $.ajax({
-            method: 'GET',
-            url: form.attr('action') + '?_token=' + csrf,
-            data: idJson,
-            dataType: 'json',
+            method: 'POST',
+            url: '{{ route("trip.massDelete") }}',
+            data: data,
             statusCode: {
               404: function() {
                 alert("Unable to find the requested page");
@@ -305,7 +301,7 @@
 
             if (response[0] == 'success') {
               $('#success-message-ajax').removeClass('hidden');
-              $.each(idJson, function(key, value) {
+              $.each(data, function(key, value) {
 
                 console.log(value);
 
