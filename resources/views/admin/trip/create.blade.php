@@ -35,7 +35,7 @@
                               @csrf
                               <i class="bi bi-trash3" onclick="$.fn.delete(${id})" alt="Delete"></i>                                                                            
                               </form> 
-                              <a href="javascript:void();" onClick="$.fn.edit(${id})">
+                              <a href="javascript:void();" onClick="$.fn.edit(${id});">
                               <i class="bi bi-pen-fill edit-author" alt="Edit"></i>
                               </a>
                           </td>
@@ -45,7 +45,44 @@
     };
 
     $.fn.edit = function(id) {
-      alert(`/admin/trip/${id}/edit`);
+
+      var url = `/admin/trip/${id}/edit`;
+      var storeUrl = `/admin/trip/${id}`;
+
+      $.ajax({
+          method: 'GET',
+          url: url,
+          statusCode: {
+            404: function() {
+              alert("Unable to find the requested page");
+            },
+            500: function() {
+              alert("Internal Server Error");
+            }
+          }
+        })
+        .done(function(response) {
+          $("#name").val(response.data.name);
+          $("#id").val(response.data.id);
+          $("#form-title").html(response.label);
+          $("#form").prop('action', storeUrl);
+
+          var selectedIds = [];
+
+          $(response.data.members).each(function(key, value) {
+            selectedIds.push(value.id);
+          });
+
+          $("#members option").prop("selected", false);
+
+          $("#members option").each(function() {
+            if (selectedIds.includes(parseInt($(this).val()))) {
+              $(this).prop('selected', true);
+            }
+          });
+
+        });
+
     }
 
     $.fn.toggleStatus = function(id, status) {
@@ -181,8 +218,7 @@
         var deleteButton = ``;
 
         if (data.trips.length) {
-          deleteButton += `<span class="badge badge-danger">`;
-          deleteButton += `<a class="text-black" href="javascript:void(0);" onclick="$.fn.deleteAll();">Delete</a></span>`;
+          deleteButton = $.fn.getMassDeleteButton();
         }
 
         $('#button').html(deleteButton);
@@ -193,6 +229,14 @@
 
       });
     };
+
+    $.fn.getMassDeleteButton = function() {
+
+      var deleteButton = `<span class="badge badge-danger">`;
+      deleteButton += `<a class="text-black" href="javascript:void(0);" onclick="$.fn.deleteAll();">Delete</a></span>`;
+      return deleteButton;
+
+    }
 
     $.fn.getStatus = function(status, id) {
 
@@ -282,7 +326,7 @@
           }
         });
 
-        var data = $( '.trip_list_checkbox' ).serialize();
+        var data = $('.trip_list_checkbox').serialize();
 
         $.ajax({
             method: 'POST',
@@ -301,15 +345,17 @@
 
             if (response[0] == 'success') {
               $('#success-message-ajax').removeClass('hidden');
-              $.each(data, function(key, value) {
 
-                console.log(value);
+              var deletedIds = response[2];
 
-                // $('#'+id).remove();
-
+              $.each(deletedIds, function(key, id) {
+                $('#' + id).remove();
               });
 
-              $.fn.setIndex();
+              deleteButton = $.fn.getMassDeleteButton();
+
+              $("#delete_trip_check_all").prop('checked', '');
+
               setTimeout(function() {
                 $('#success-message-ajax').addClass('hidden');
               }, 2500);
@@ -324,10 +370,10 @@
       }
     }
 
-    $.fn.setMembersOption = function(members) {
+    $.fn.setMembersOption = function(members, selectedIds = []) {
       var option = '';
       $.each(members, function(key, value) {
-        option += `<option value="${value.id}">${value.name}</option>`
+        option += `<option value="${value.id}" ${ selectedIds.includes( value.id ) ? selected='selected' : ""}>${value.name}</option>`
       });
       $('#members').html(option);
     };
@@ -340,12 +386,6 @@
 
     $("#form").submit(function(e) {
 
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
       e.preventDefault();
       var form = this;
       var formData = $(form).serialize()
@@ -353,12 +393,19 @@
       $('#name_error').html('');
       $('#member_error').html('');
 
+      if ($("#id").val()) {
+        formData += "&_method=PATCH";
+      } else {
+      }
+
       $.ajax({
         method: 'POST',
         url: $(form).attr('action'),
         data: formData,
-        dataType: 'json',
-
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+       // dataType: 'json',
         success: function(response) {
 
           if (response[0] == 'success') {
@@ -369,7 +416,11 @@
             var name = response.data[0].name;
             var status = response.data[0].status;
 
-            $('#list').append($.fn.makeRow(id, name, status));
+            if ($("#id").val()) {
+              alert('Hi');
+            } else {
+              $('#list').append($.fn.makeRow(id, name, status));
+            }
 
             $.fn.resetForm();
             $('#success-message').removeClass('hidden');
@@ -425,7 +476,7 @@
               <div class="row mb-3">
                 <label for="inputPassword" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" name="name" value="<?php echo rand(); ?>">
+                  <input type="text" class="form-control" name="name" id="name" value="">
                 </div>
               </div>
               <div class="row mb-4"><span class="text-danger error_text" id="members_error"></span></div>
@@ -437,7 +488,9 @@
               </div>
               <div class="row mb-3">
                 <div class="col-sm-10">
+                  <input type="thidden" name="id" id="id">
                   <button type="submit" class="btn btn-primary">Save</button>
+                  <button id="cancel" class="btn btn-primary">Cancel</button>
                 </div>
               </div>
             </form>

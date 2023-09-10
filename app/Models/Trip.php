@@ -20,4 +20,9 @@ class Trip extends Model
     {
         return $this->belongsToMany(Member::class, 'trip_members')->withTimestamps();
     }
+
+    public function getTrips()
+    {
+        return Trip::where('status', 1)->get();
+    }
 }

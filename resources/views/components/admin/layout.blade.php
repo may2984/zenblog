@@ -342,14 +342,14 @@
           <ul id="trip-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">         
             <li>
               <a href="{{ route('trip.create') }}">
-                <i class="bi bi-circle"></i><span>Add</span>
+                <i class="bi bi-circle"></i><span>Add Trip</span>
               </a>
             </li>
-          </ul>  
+          </ul>          
           <ul id="trip-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">         
             <li>
-              <a href="{{ route('trip.list') }}">
-                <i class="bi bi-circle"></i><span>List</span>
+              <a href="{{ route('trip.expenses.create') }}">
+                <i class="bi bi-circle"></i><span>Add Expenses</span>
               </a>
             </li>
           </ul>      

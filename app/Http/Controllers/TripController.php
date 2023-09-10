@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use App\Http\Controllers\MemberController;
 
 class TripController extends Controller
 {
@@ -30,7 +31,7 @@ class TripController extends Controller
     public function index()
     {
         $trips = Model::select('id', 'name', 'status')->get()->toArray();
-        $members = Member::select('id', 'name', 'status')->get()->toArray();
+        $members = Member::select('id', 'name')->get()->toArray();
 
         $data = [
             'trips' => $trips,
@@ -102,11 +103,11 @@ class TripController extends Controller
      */
     public function edit($id)
     {
-        $data = Model::select('id', 'name', 'status')->find($id);
+        $data = Model::with('members:id,name')->select('id', 'name')->find($id);
 
-        return view('admin.' . $this->folder . '.edit', [
+        return response()->json([
             'data' => $data,
-            'label' => $this->label,
+            'label' => 'Edit ' . $this->label,
         ]);
     }
 
@@ -178,16 +179,33 @@ class TripController extends Controller
     {
         $id =  Arr::join($request->input('trip_list_checkbox'), ",");
 
-        $deleted = 1; //Model::destroy($id);
+        $deleted = Model::destroy(array($id));
 
         if ($deleted) {
+            $deletedIds = explode(",", $id);
             return response()->json([
-                'success', $this->label . ' Deleted',
+                'success', $this->label . ' Deleted', $deletedIds
             ]);
         } else {
             return response()->json([
                 'error', 'Error! Try again'
             ]);
         }
+    }
+
+    /**
+     * This function return all the active trips
+     */
+
+    public function all()
+    {        
+        $trips = Model::select('id', 'name', 'status')->get()->toArray();
+        return response()->json($trips);
+    }
+
+    public function membersByTripId($id)
+    {
+        $members =(new Model)::with('members:id,name')->find($id)->members;
+        return response()->json($members);
     }
 }

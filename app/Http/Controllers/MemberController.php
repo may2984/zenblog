@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\MemberStore;
-// use App\Http\Requests\MemberStore as ModelStore;
 use App\Models\Member as Model;
 use Illuminate\Support\Facades\DB;
 
