@@ -143,6 +143,7 @@ Route::prefix('admin')->middleware(['login.check'])->group(function () {
 Route::prefix('admin')->middleware(['login.check'])->group(function () {
     Route::get('trip/expenses/create', [TripExpensesController::class, 'create'])->name('trip.expenses.create');
     Route::post('trip/expenses/store', [TripExpensesController::class, 'store'])->name('trip.expenses.store');
+    Route::get('trip/expenses/list', [TripExpensesController::class, 'list'])->name('trip.expenses.list');
 });
 
 Route::prefix('admin')->middleware(['login.check'])->group(function () {

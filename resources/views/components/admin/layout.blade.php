@@ -352,6 +352,11 @@
                 <i class="bi bi-circle"></i><span>Add Expenses</span>
               </a>
             </li>
+            <li>
+              <a href="{{ route('trip.expenses.list') }}">
+                <i class="bi bi-circle"></i><span>List Expenses</span>
+              </a>
+            </li>
           </ul>      
       </li>
       <li class="nav-item">

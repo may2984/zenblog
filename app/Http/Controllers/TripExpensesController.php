@@ -49,14 +49,16 @@ class TripExpensesController extends Controller
     {
         $trip_id = $request->input("trip_id");
         $member_id = $request->input("member_id");
-        $date_time = $request->input("date_time");
+        $date_time = $request->input("date_time") ? Carbon::createFromFormat('Y-m-d', $request->input("date_time")) : Carbon::now();
         $amount = $request->input("amount");
+        $item = $request->input("item");
 
         $data = [
             'trip_id' => $trip_id,
             'member_id' => $member_id,
-            'date_time' =>  Carbon::createFromFormat('Y-m-d', $date_time),
-            'amount' => $amount ?? 0
+            'date_time' => $date_time,
+            'amount' => $amount,
+            'item' => $item
         ];
 
         $created = (new TripExpenses)::create($data);
@@ -111,5 +113,20 @@ class TripExpensesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Returns list of expenses based on expense id
+     */
+
+    public function list()
+    {
+        $expenses = (new TripExpenses)::with('member:id,name')->whereTripId(103)->orderByDesc('date_time')->get();
+        // dd($expenses);
+
+        return view('admin.' . $this->folder . '.list', [
+            'label' => $this->label,
+            'expenses' => $expenses
+        ]);
     }
 }

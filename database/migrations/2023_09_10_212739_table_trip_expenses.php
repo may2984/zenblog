@@ -19,6 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Trip::class)->references('id')->on('trips')->cascadeOnDelete();
             $table->foreignIdFor(Member::class)->references('id')->on('members')->cascadeOnDelete();
+            $table->string('item')->default('');
             $table->double('amount', 8, 2);
             $table->timestamp('date_time', $precision = 0);
             $table->timestamps();
