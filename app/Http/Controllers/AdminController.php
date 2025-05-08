@@ -16,11 +16,7 @@ class AdminController extends Controller
 {
     public function login(Request $request)
     {
-<<<<<<< HEAD
         ## test #??
-=======
-        ## test 
->>>>>>> test
         $request->validate([
             'email' => 'required',
             'password' => 'required'
