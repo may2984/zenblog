@@ -18,7 +18,7 @@ class AdminController extends Controller
     {
 
         ## test ?? >
-## test comment
+        ## test comment
         $request->validate([
             'email' => 'required',
             'password' => 'required'
